@@ -1,0 +1,938 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PotStirreresDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="DeviceId" />
+          </Key>
+          <Property Name="DeviceId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DiceSkin">
+          <Key>
+            <PropertyRef Name="DiceSkinId" />
+          </Key>
+          <Property Name="DiceSkinId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DiceSkinName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Rarity" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Friends">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="FriendId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="FriendId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GameAnalytics">
+          <Key>
+            <PropertyRef Name="GameId" />
+          </Key>
+          <Property Name="GameId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GameStartTime" Type="datetime" Nullable="false" />
+          <Property Name="GameEndTime" Type="datetime" />
+          <Property Name="Player1Id" Type="int" Nullable="false" />
+          <Property Name="Player2Id" Type="int" Nullable="false" />
+          <Property Name="Player1CookedNum" Type="int" />
+          <Property Name="Player2CookedNum" Type="int" />
+          <Property Name="WineMenu" Type="bit" Nullable="false" />
+          <Property Name="TotalTurns" Type="int" />
+          <Property Name="Quit" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GiveawayKey">
+          <Key>
+            <PropertyRef Name="GiveawayKeyId" />
+          </Key>
+          <Property Name="IsClaimed" Type="bit" Nullable="false" />
+          <Property Name="ClaimedById" Type="int" />
+          <Property Name="ClaimedTime" Type="datetime" />
+          <Property Name="RewardAmount" Type="int" Nullable="false" />
+          <Property Name="GiveawayKeyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KeyCode" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="IngredientSkin">
+          <Key>
+            <PropertyRef Name="IngredientSkinId" />
+          </Key>
+          <Property Name="IngredientSkinId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IngredientSkinName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LoggedIn">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="LoginDate" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="LoginDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="Body" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="FromId" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Level" Type="int" Nullable="false" />
+          <Property Name="Xp" Type="int" Nullable="false" />
+          <Property Name="Stars" Type="int" Nullable="false" />
+          <Property Name="Cooked" Type="int" Nullable="false" />
+          <Property Name="LocalWins" Type="int" Nullable="false" />
+          <Property Name="Wins" Type="int" Nullable="false" />
+          <Property Name="SelectedMeat" Type="int" Nullable="false" />
+          <Property Name="SelectedVeggie" Type="int" Nullable="false" />
+          <Property Name="SelectedFruit" Type="int" Nullable="false" />
+          <Property Name="SelectedFourthIngredient" Type="int" Nullable="false" />
+          <Property Name="SelectedDie" Type="int" Nullable="false" />
+          <Property Name="SelectedDie2" Type="int" Nullable="false" />
+          <Property Name="WineMenu" Type="bit" Nullable="false" />
+          <Property Name="UseD8s" Type="bit" Nullable="false" />
+          <Property Name="DisableDoubles" Type="bit" Nullable="false" />
+          <Property Name="PlayAsPurple" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SelectedDice">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="DiceSkinId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="DiceSkinId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User_Dice_Unlock">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="DiceSkinId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="DiceSkinId" Type="int" Nullable="false" />
+          <Property Name="DiceFaceUnlockedQty" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User_Purchase">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="PurchaseId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PurchaseId" Type="int" Nullable="false" />
+          <Property Name="PurchaseDate" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PlayerProfile">
+          <Key>
+            <PropertyRef Name="Username" />
+            <PropertyRef Name="Level" />
+            <PropertyRef Name="Cooked" />
+            <PropertyRef Name="Stars" />
+          </Key>
+          <Property Name="Username" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="DailyWins" Type="int" />
+          <Property Name="WeeklyWins" Type="int" />
+          <Property Name="AllWins" Type="int" />
+          <Property Name="AllPVPWins" Type="int" />
+          <Property Name="Level" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="Cooked" Type="int" Nullable="false" />
+          <Property Name="Stars" Type="int" Nullable="false" />
+          <Property Name="LastLogin" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_Device_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Device" Type="Self.Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Device">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Friends_Friends">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Friends" Type="Self.Friends" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Friends">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Friends_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Friends" Type="Self.Friends" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Friends">
+              <PropertyRef Name="FriendId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameAnalytics_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="GameAnalytics" Type="Self.GameAnalytics" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="GameAnalytics">
+              <PropertyRef Name="Player1Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameAnalytics_Player1">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="GameAnalytics" Type="Self.GameAnalytics" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="GameAnalytics">
+              <PropertyRef Name="Player2Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GiveawayKey_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="0..1" />
+          <End Role="GiveawayKey" Type="Self.GiveawayKey" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="GiveawayKey">
+              <PropertyRef Name="ClaimedById" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LoggedIn_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="LoggedIn" Type="Self.LoggedIn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="LoggedIn">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Message_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Message_Player1">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="FromId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SelectedDice_DiceSkin">
+          <End Role="DiceSkin" Type="Self.DiceSkin" Multiplicity="1" />
+          <End Role="SelectedDice" Type="Self.SelectedDice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DiceSkin">
+              <PropertyRef Name="DiceSkinId" />
+            </Principal>
+            <Dependent Role="SelectedDice">
+              <PropertyRef Name="DiceSkinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SelectedDice_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="SelectedDice" Type="Self.SelectedDice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="SelectedDice">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Dice_Unlock_DiceSkin">
+          <End Role="DiceSkin" Type="Self.DiceSkin" Multiplicity="1" />
+          <End Role="User_Dice_Unlock" Type="Self.User_Dice_Unlock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DiceSkin">
+              <PropertyRef Name="DiceSkinId" />
+            </Principal>
+            <Dependent Role="User_Dice_Unlock">
+              <PropertyRef Name="DiceSkinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Dice_Unlock_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="User_Dice_Unlock" Type="Self.User_Dice_Unlock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Dice_Unlock">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Purchase_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="User_Purchase" Type="Self.User_Purchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Purchase">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PotStirreresDBModelStoreContainer">
+          <EntitySet Name="Device" EntityType="Self.Device" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DiceSkin" EntityType="Self.DiceSkin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Friends" EntityType="Self.Friends" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameAnalytics" EntityType="Self.GameAnalytics" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GiveawayKey" EntityType="Self.GiveawayKey" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IngredientSkin" EntityType="Self.IngredientSkin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LoggedIn" EntityType="Self.LoggedIn" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Message" EntityType="Self.Message" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Player" EntityType="Self.Player" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SelectedDice" EntityType="Self.SelectedDice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Dice_Unlock" EntityType="Self.User_Dice_Unlock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Purchase" EntityType="Self.User_Purchase" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlayerProfile" EntityType="Self.PlayerProfile" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PlayerProfile].[Username] AS [Username], 
+    [PlayerProfile].[DailyWins] AS [DailyWins], 
+    [PlayerProfile].[WeeklyWins] AS [WeeklyWins], 
+    [PlayerProfile].[AllWins] AS [AllWins], 
+    [PlayerProfile].[AllPVPWins] AS [AllPVPWins], 
+    [PlayerProfile].[Level] AS [Level], 
+    [PlayerProfile].[CreatedDate] AS [CreatedDate], 
+    [PlayerProfile].[Cooked] AS [Cooked], 
+    [PlayerProfile].[Stars] AS [Stars], 
+    [PlayerProfile].[LastLogin] AS [LastLogin]
+    FROM [dbo].[PlayerProfile] AS [PlayerProfile]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Device_Player" Association="Self.FK_Device_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="Device" EntitySet="Device" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Friends_Friends" Association="Self.FK_Friends_Friends">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="Friends" EntitySet="Friends" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Friends_Player" Association="Self.FK_Friends_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="Friends" EntitySet="Friends" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameAnalytics_Player" Association="Self.FK_GameAnalytics_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="GameAnalytics" EntitySet="GameAnalytics" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameAnalytics_Player1" Association="Self.FK_GameAnalytics_Player1">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="GameAnalytics" EntitySet="GameAnalytics" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GiveawayKey_Player" Association="Self.FK_GiveawayKey_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="GiveawayKey" EntitySet="GiveawayKey" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LoggedIn_Player" Association="Self.FK_LoggedIn_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="LoggedIn" EntitySet="LoggedIn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Message_Player" Association="Self.FK_Message_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="Message" EntitySet="Message" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Message_Player1" Association="Self.FK_Message_Player1">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="Message" EntitySet="Message" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SelectedDice_DiceSkin" Association="Self.FK_SelectedDice_DiceSkin">
+            <End Role="DiceSkin" EntitySet="DiceSkin" />
+            <End Role="SelectedDice" EntitySet="SelectedDice" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SelectedDice_Player" Association="Self.FK_SelectedDice_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="SelectedDice" EntitySet="SelectedDice" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Dice_Unlock_DiceSkin" Association="Self.FK_User_Dice_Unlock_DiceSkin">
+            <End Role="DiceSkin" EntitySet="DiceSkin" />
+            <End Role="User_Dice_Unlock" EntitySet="User_Dice_Unlock" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Dice_Unlock_Player" Association="Self.FK_User_Dice_Unlock_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="User_Dice_Unlock" EntitySet="User_Dice_Unlock" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Purchase_Player" Association="Self.FK_User_Purchase_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="User_Purchase" EntitySet="User_Purchase" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PotStirreresDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="PotStirreresDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="GameAnalytics" EntityType="PotStirreresDBModel.GameAnalytic" />
+          <EntitySet Name="Players" EntityType="PotStirreresDBModel.Player" />
+          <AssociationSet Name="FK_GameAnalytics_Player" Association="PotStirreresDBModel.FK_GameAnalytics_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="GameAnalytic" EntitySet="GameAnalytics" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameAnalytics_Player1" Association="PotStirreresDBModel.FK_GameAnalytics_Player1">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="GameAnalytic" EntitySet="GameAnalytics" />
+          </AssociationSet>
+          <EntitySet Name="Devices" EntityType="PotStirreresDBModel.Device" />
+          <EntitySet Name="LoggedIns" EntityType="PotStirreresDBModel.LoggedIn" />
+          <EntitySet Name="User_Purchase" EntityType="PotStirreresDBModel.User_Purchase" />
+          <AssociationSet Name="FK_Device_Player" Association="PotStirreresDBModel.FK_Device_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="Device" EntitySet="Devices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LoggedIn_Player" Association="PotStirreresDBModel.FK_LoggedIn_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="LoggedIn" EntitySet="LoggedIns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Purchase_Player" Association="PotStirreresDBModel.FK_User_Purchase_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="User_Purchase" EntitySet="User_Purchase" />
+          </AssociationSet>
+          <EntitySet Name="Messages" EntityType="PotStirreresDBModel.Message" />
+          <AssociationSet Name="FK_Message_Player" Association="PotStirreresDBModel.FK_Message_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="Friends" Association="PotStirreresDBModel.Friends">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="Player1" EntitySet="Players" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Message_Player1" Association="PotStirreresDBModel.FK_Message_Player1">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <EntitySet Name="PlayerProfiles" EntityType="PotStirreresDBModel.PlayerProfile" />
+          <EntitySet Name="GiveawayKeys" EntityType="PotStirreresDBModel.GiveawayKey" />
+          <AssociationSet Name="FK_GiveawayKey_Player" Association="PotStirreresDBModel.FK_GiveawayKey_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="GiveawayKey" EntitySet="GiveawayKeys" />
+          </AssociationSet>
+          <EntitySet Name="DiceSkins" EntityType="PotStirreresDBModel.DiceSkin" />
+          <EntitySet Name="IngredientSkins" EntityType="PotStirreresDBModel.IngredientSkin" />
+          <EntitySet Name="User_Dice_Unlock" EntityType="PotStirreresDBModel.User_Dice_Unlock" />
+          <AssociationSet Name="FK_User_Dice_Unlock_DiceSkin" Association="PotStirreresDBModel.FK_User_Dice_Unlock_DiceSkin">
+            <End Role="DiceSkin" EntitySet="DiceSkins" />
+            <End Role="User_Dice_Unlock" EntitySet="User_Dice_Unlock" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Dice_Unlock_Player" Association="PotStirreresDBModel.FK_User_Dice_Unlock_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="User_Dice_Unlock" EntitySet="User_Dice_Unlock" />
+          </AssociationSet>
+          <AssociationSet Name="SelectedDice" Association="PotStirreresDBModel.SelectedDice">
+            <End Role="DiceSkin" EntitySet="DiceSkins" />
+            <End Role="Player" EntitySet="Players" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="GameAnalytic">
+          <Key>
+            <PropertyRef Name="GameId" />
+          </Key>
+          <Property Name="GameId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GameStartTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="GameEndTime" Type="DateTime" Precision="3" />
+          <Property Name="Player1Id" Type="Int32" Nullable="false" />
+          <Property Name="Player2Id" Type="Int32" Nullable="false" />
+          <Property Name="Player1CookedNum" Type="Int32" />
+          <Property Name="Player2CookedNum" Type="Int32" />
+          <Property Name="WineMenu" Type="Boolean" Nullable="false" />
+          <Property Name="TotalTurns" Type="Int32" />
+          <Property Name="Quit" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_GameAnalytics_Player" FromRole="GameAnalytic" ToRole="Player" />
+          <NavigationProperty Name="Player1" Relationship="PotStirreresDBModel.FK_GameAnalytics_Player1" FromRole="GameAnalytic" ToRole="Player" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Level" Type="Int32" Nullable="false" />
+          <Property Name="Xp" Type="Int32" Nullable="false" />
+          <Property Name="Stars" Type="Int32" Nullable="false" />
+          <Property Name="Cooked" Type="Int32" Nullable="false" />
+          <Property Name="LocalWins" Type="Int32" Nullable="false" />
+          <Property Name="Wins" Type="Int32" Nullable="false" />
+          <Property Name="SelectedMeat" Type="Int32" Nullable="false" />
+          <Property Name="SelectedVeggie" Type="Int32" Nullable="false" />
+          <Property Name="SelectedFruit" Type="Int32" Nullable="false" />
+          <Property Name="SelectedDie" Type="Int32" Nullable="false" />
+          <Property Name="SelectedDie2" Type="Int32" Nullable="false" />
+          <Property Name="WineMenu" Type="Boolean" Nullable="false" />
+          <Property Name="UseD8s" Type="Boolean" Nullable="false" />
+          <Property Name="DisableDoubles" Type="Boolean" Nullable="false" />
+          <Property Name="PlayAsPurple" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="GameAnalytics" Relationship="PotStirreresDBModel.FK_GameAnalytics_Player" FromRole="Player" ToRole="GameAnalytic" />
+          <NavigationProperty Name="GameAnalytics1" Relationship="PotStirreresDBModel.FK_GameAnalytics_Player1" FromRole="Player" ToRole="GameAnalytic" />
+          <NavigationProperty Name="Devices" Relationship="PotStirreresDBModel.FK_Device_Player" FromRole="Player" ToRole="Device" />
+          <NavigationProperty Name="LoggedIns" Relationship="PotStirreresDBModel.FK_LoggedIn_Player" FromRole="Player" ToRole="LoggedIn" />
+          <NavigationProperty Name="User_Purchase" Relationship="PotStirreresDBModel.FK_User_Purchase_Player" FromRole="Player" ToRole="User_Purchase" />
+          <NavigationProperty Name="Messages" Relationship="PotStirreresDBModel.FK_Message_Player" FromRole="Player" ToRole="Message" />
+          <NavigationProperty Name="Player1" Relationship="PotStirreresDBModel.Friends" FromRole="Player" ToRole="Player1" />
+          <NavigationProperty Name="Players" Relationship="PotStirreresDBModel.Friends" FromRole="Player1" ToRole="Player" />
+          <NavigationProperty Name="Messages1" Relationship="PotStirreresDBModel.FK_Message_Player1" FromRole="Player" ToRole="Message" />
+          <NavigationProperty Name="GiveawayKeys" Relationship="PotStirreresDBModel.FK_GiveawayKey_Player" FromRole="Player" ToRole="GiveawayKey" />
+          <NavigationProperty Name="User_Dice_Unlock" Relationship="PotStirreresDBModel.FK_User_Dice_Unlock_Player" FromRole="Player" ToRole="User_Dice_Unlock" />
+          <Property Name="SelectedFourthIngredient" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DiceSkins" Relationship="PotStirreresDBModel.SelectedDice" FromRole="Player" ToRole="DiceSkin" />
+        </EntityType>
+        <Association Name="FK_GameAnalytics_Player">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.GameAnalytic" Role="GameAnalytic" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="GameAnalytic">
+              <PropertyRef Name="Player1Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameAnalytics_Player1">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.GameAnalytic" Role="GameAnalytic" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="GameAnalytic">
+              <PropertyRef Name="Player2Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="DeviceId" />
+          </Key>
+          <Property Name="DeviceId" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_Device_Player" FromRole="Device" ToRole="Player" />
+        </EntityType>
+        <EntityType Name="LoggedIn">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="LoginDate" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="LoginDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_LoggedIn_Player" FromRole="LoggedIn" ToRole="Player" />
+        </EntityType>
+        <EntityType Name="User_Purchase">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="PurchaseId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PurchaseId" Type="Int32" Nullable="false" />
+          <Property Name="PurchaseDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_User_Purchase_Player" FromRole="User_Purchase" ToRole="Player" />
+        </EntityType>
+        <Association Name="FK_Device_Player">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.Device" Role="Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Device">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LoggedIn_Player">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.LoggedIn" Role="LoggedIn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="LoggedIn">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Purchase_Player">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.User_Purchase" Role="User_Purchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Purchase">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="Body" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_Message_Player" FromRole="Message" ToRole="Player" />
+          <Property Name="FromId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Player1" Relationship="PotStirreresDBModel.FK_Message_Player1" FromRole="Message" ToRole="Player" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Message_Player">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Friends">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="*" />
+          <End Type="PotStirreresDBModel.Player" Role="Player1" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Message_Player1">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="FromId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PlayerProfile">
+          <Key>
+            <PropertyRef Name="Username" />
+            <PropertyRef Name="Level" />
+            <PropertyRef Name="Cooked" />
+            <PropertyRef Name="Stars" />
+          </Key>
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="DailyWins" Type="Int32" />
+          <Property Name="WeeklyWins" Type="Int32" />
+          <Property Name="AllWins" Type="Int32" />
+          <Property Name="AllPVPWins" Type="Int32" />
+          <Property Name="Level" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Cooked" Type="Int32" Nullable="false" />
+          <Property Name="Stars" Type="Int32" Nullable="false" />
+          <Property Name="LastLogin" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="GiveawayKey">
+          <Key>
+            <PropertyRef Name="GiveawayKeyId" />
+          </Key>
+          <Property Name="IsClaimed" Type="Boolean" Nullable="false" />
+          <Property Name="ClaimedById" Type="Int32" />
+          <Property Name="ClaimedTime" Type="DateTime" Precision="3" />
+          <Property Name="RewardAmount" Type="Int32" Nullable="false" />
+          <Property Name="GiveawayKeyId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KeyCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_GiveawayKey_Player" FromRole="GiveawayKey" ToRole="Player" />
+        </EntityType>
+        <Association Name="FK_GiveawayKey_Player">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="0..1" />
+          <End Type="PotStirreresDBModel.GiveawayKey" Role="GiveawayKey" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="GiveawayKey">
+              <PropertyRef Name="ClaimedById" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="DiceSkin">
+          <Key>
+            <PropertyRef Name="DiceSkinId" />
+          </Key>
+          <Property Name="DiceSkinId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DiceSkinName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Rarity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User_Dice_Unlock" Relationship="PotStirreresDBModel.FK_User_Dice_Unlock_DiceSkin" FromRole="DiceSkin" ToRole="User_Dice_Unlock" />
+          <NavigationProperty Name="Players" Relationship="PotStirreresDBModel.SelectedDice" FromRole="DiceSkin" ToRole="Player" />
+        </EntityType>
+        <EntityType Name="IngredientSkin">
+          <Key>
+            <PropertyRef Name="IngredientSkinId" />
+          </Key>
+          <Property Name="IngredientSkinId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IngredientSkinName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="User_Dice_Unlock">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="DiceSkinId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="DiceSkinId" Type="Int32" Nullable="false" />
+          <Property Name="DiceFaceUnlockedQty" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DiceSkin" Relationship="PotStirreresDBModel.FK_User_Dice_Unlock_DiceSkin" FromRole="User_Dice_Unlock" ToRole="DiceSkin" />
+          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_User_Dice_Unlock_Player" FromRole="User_Dice_Unlock" ToRole="Player" />
+        </EntityType>
+        <Association Name="FK_User_Dice_Unlock_DiceSkin">
+          <End Type="PotStirreresDBModel.DiceSkin" Role="DiceSkin" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.User_Dice_Unlock" Role="User_Dice_Unlock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DiceSkin">
+              <PropertyRef Name="DiceSkinId" />
+            </Principal>
+            <Dependent Role="User_Dice_Unlock">
+              <PropertyRef Name="DiceSkinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Dice_Unlock_Player">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.User_Dice_Unlock" Role="User_Dice_Unlock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Dice_Unlock">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SelectedDice">
+          <End Type="PotStirreresDBModel.DiceSkin" Role="DiceSkin" Multiplicity="*" />
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="*" />
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PotStirreresDBModelStoreContainer" CdmEntityContainer="PotStirreresDBEntities">
+          <EntitySetMapping Name="GameAnalytics">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.GameAnalytic">
+              <MappingFragment StoreEntitySet="GameAnalytics">
+                <ScalarProperty Name="Quit" ColumnName="Quit" />
+                <ScalarProperty Name="TotalTurns" ColumnName="TotalTurns" />
+                <ScalarProperty Name="WineMenu" ColumnName="WineMenu" />
+                <ScalarProperty Name="Player2CookedNum" ColumnName="Player2CookedNum" />
+                <ScalarProperty Name="Player1CookedNum" ColumnName="Player1CookedNum" />
+                <ScalarProperty Name="Player2Id" ColumnName="Player2Id" />
+                <ScalarProperty Name="Player1Id" ColumnName="Player1Id" />
+                <ScalarProperty Name="GameEndTime" ColumnName="GameEndTime" />
+                <ScalarProperty Name="GameStartTime" ColumnName="GameStartTime" />
+                <ScalarProperty Name="GameId" ColumnName="GameId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Players">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.Player">
+              <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="SelectedFourthIngredient" ColumnName="SelectedFourthIngredient" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="PlayAsPurple" ColumnName="PlayAsPurple" />
+                <ScalarProperty Name="DisableDoubles" ColumnName="DisableDoubles" />
+                <ScalarProperty Name="UseD8s" ColumnName="UseD8s" />
+                <ScalarProperty Name="WineMenu" ColumnName="WineMenu" />
+                <ScalarProperty Name="SelectedDie2" ColumnName="SelectedDie2" />
+                <ScalarProperty Name="SelectedDie" ColumnName="SelectedDie" />
+                <ScalarProperty Name="SelectedFruit" ColumnName="SelectedFruit" />
+                <ScalarProperty Name="SelectedVeggie" ColumnName="SelectedVeggie" />
+                <ScalarProperty Name="SelectedMeat" ColumnName="SelectedMeat" />
+                <ScalarProperty Name="Wins" ColumnName="Wins" />
+                <ScalarProperty Name="LocalWins" ColumnName="LocalWins" />
+                <ScalarProperty Name="Cooked" ColumnName="Cooked" />
+                <ScalarProperty Name="Stars" ColumnName="Stars" />
+                <ScalarProperty Name="Xp" ColumnName="Xp" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Devices">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.Device">
+              <MappingFragment StoreEntitySet="Device">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="DeviceId" ColumnName="DeviceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LoggedIns">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.LoggedIn">
+              <MappingFragment StoreEntitySet="LoggedIn">
+                <ScalarProperty Name="LoginDate" ColumnName="LoginDate" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Purchase">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.User_Purchase">
+              <MappingFragment StoreEntitySet="User_Purchase">
+                <ScalarProperty Name="PurchaseDate" ColumnName="PurchaseDate" />
+                <ScalarProperty Name="PurchaseId" ColumnName="PurchaseId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.Message">
+              <MappingFragment StoreEntitySet="Message">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="FromId" ColumnName="FromId" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Friends" TypeName="PotStirreresDBModel.Friends" StoreEntitySet="Friends">
+            <EndProperty Name="Player1">
+              <ScalarProperty Name="UserId" ColumnName="FriendId" />
+            </EndProperty>
+            <EndProperty Name="Player">
+              <ScalarProperty Name="UserId" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="PlayerProfiles">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.PlayerProfile">
+              <MappingFragment StoreEntitySet="PlayerProfile">
+                <ScalarProperty Name="LastLogin" ColumnName="LastLogin" />
+                <ScalarProperty Name="Stars" ColumnName="Stars" />
+                <ScalarProperty Name="Cooked" ColumnName="Cooked" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="AllPVPWins" ColumnName="AllPVPWins" />
+                <ScalarProperty Name="AllWins" ColumnName="AllWins" />
+                <ScalarProperty Name="WeeklyWins" ColumnName="WeeklyWins" />
+                <ScalarProperty Name="DailyWins" ColumnName="DailyWins" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GiveawayKeys">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.GiveawayKey">
+              <MappingFragment StoreEntitySet="GiveawayKey">
+                <ScalarProperty Name="KeyCode" ColumnName="KeyCode" />
+                <ScalarProperty Name="GiveawayKeyId" ColumnName="GiveawayKeyId" />
+                <ScalarProperty Name="RewardAmount" ColumnName="RewardAmount" />
+                <ScalarProperty Name="ClaimedTime" ColumnName="ClaimedTime" />
+                <ScalarProperty Name="ClaimedById" ColumnName="ClaimedById" />
+                <ScalarProperty Name="IsClaimed" ColumnName="IsClaimed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DiceSkins">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.DiceSkin">
+              <MappingFragment StoreEntitySet="DiceSkin">
+                <ScalarProperty Name="Rarity" ColumnName="Rarity" />
+                <ScalarProperty Name="DiceSkinName" ColumnName="DiceSkinName" />
+                <ScalarProperty Name="DiceSkinId" ColumnName="DiceSkinId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IngredientSkins">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.IngredientSkin">
+              <MappingFragment StoreEntitySet="IngredientSkin">
+                <ScalarProperty Name="IngredientSkinName" ColumnName="IngredientSkinName" />
+                <ScalarProperty Name="IngredientSkinId" ColumnName="IngredientSkinId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Dice_Unlock">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.User_Dice_Unlock">
+              <MappingFragment StoreEntitySet="User_Dice_Unlock">
+                <ScalarProperty Name="DiceFaceUnlockedQty" ColumnName="DiceFaceUnlockedQty" />
+                <ScalarProperty Name="DiceSkinId" ColumnName="DiceSkinId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="SelectedDice" TypeName="PotStirreresDBModel.SelectedDice" StoreEntitySet="SelectedDice">
+            <EndProperty Name="Player">
+              <ScalarProperty Name="UserId" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="DiceSkin">
+              <ScalarProperty Name="DiceSkinId" ColumnName="DiceSkinId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

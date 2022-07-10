@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="92a5c25699394dba9eebad7e573ac74d" Name="Diagram1">
+        <EntityTypeShape EntityType="PotStirreresDBModel.GameAnalytic" Width="1.5" PointX="5.875" PointY="12.375" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.Player" Width="1.5" PointX="3.75" PointY="4.625" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_GameAnalytics_Player" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_GameAnalytics_Player1" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.Device" Width="1.5" PointX="6.375" PointY="9.625" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.LoggedIn" Width="1.5" PointX="6.375" PointY="5.625" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.User_Purchase" Width="1.5" PointX="9.375" PointY="7.125" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_Device_Player" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_LoggedIn_Player" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_User_Purchase_Player" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.Message" Width="1.5" PointX="6" PointY="17.5" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_Message_Player" />
+        <AssociationConnector Association="PotStirreresDBModel.Friends" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_Message_Player1" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.PlayerProfile" Width="1.5" PointX="1.25" PointY="2.625" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.GiveawayKey" Width="1.5" PointX="6" PointY="1.875" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_GiveawayKey_Player" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.DiceSkin" Width="1.5" PointX="8.75" PointY="1" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.IngredientSkin" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.User_Dice_Unlock" Width="1.5" PointX="11" PointY="4.375" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_User_Dice_Unlock_DiceSkin" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_User_Dice_Unlock_Player" />
+        <AssociationConnector Association="PotStirreresDBModel.SelectedDice" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
