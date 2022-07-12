@@ -28,6 +28,9 @@
         <AssociationConnector Association="PotStirreresDBModel.FK_User_Dice_Unlock_DiceSkin" />
         <AssociationConnector Association="PotStirreresDBModel.FK_User_Dice_Unlock_Player" />
         <AssociationConnector Association="PotStirreresDBModel.SelectedDice" />
+        <AssociationConnector Association="PotStirreresDBModel.User_Ingredient_Unlock" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.Chest" Width="1.5" PointX="1.375" PointY="13.125" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_Chest_Player" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

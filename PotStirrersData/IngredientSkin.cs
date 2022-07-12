@@ -14,7 +14,16 @@ namespace DataModel
     
     public partial class IngredientSkin
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public IngredientSkin()
+        {
+            this.Players = new HashSet<Player>();
+        }
+    
         public int IngredientSkinId { get; set; }
         public string IngredientSkinName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Player> Players { get; set; }
     }
 }

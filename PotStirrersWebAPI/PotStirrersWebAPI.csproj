@@ -184,6 +184,7 @@
     <Compile Include="Models\FriendDTO.cs" />
     <Compile Include="Models\PurchasableDTO.cs" />
     <Compile Include="Models\PlayerDTO.cs" />
+    <Compile Include="Models\ChestDTO.cs" />
     <Compile Include="Models\SkinDTO.cs" />
     <Compile Include="Models\TurnPosition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

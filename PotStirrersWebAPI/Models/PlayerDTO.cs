@@ -1,5 +1,6 @@
 ﻿using DataModel;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class PlayerDTO
@@ -14,8 +15,7 @@ public class PlayerDTO
         SelectedVeggie = x.SelectedVeggie;
         SelectedFruit = x.SelectedFruit;
         SelectedFourth = x.SelectedFourthIngredient;
-        SelectedDie = x.SelectedDie;
-        SelectedDie2 = x.SelectedDie2;
+        SelectedDie = x.DiceSkins.Select(y=> y.DiceSkinId).ToList();
         WineMenu = x.WineMenu;
         UseD8s = x.UseD8s;
         DisableDoubles = x.DisableDoubles;
@@ -35,8 +35,7 @@ public class PlayerDTO
     public int SelectedVeggie { get; set; }
     public int SelectedFruit { get; set; }
     public int SelectedFourth { get; set; }
-    public int SelectedDie { get; set; }
-    public int SelectedDie2 { get; set; }
+    public List<int> SelectedDie { get; set; }
     public int Stars { get; set; }
     public int Cooked { get; set; }
     public int Xp { get; set; }

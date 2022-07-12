@@ -36,5 +36,6 @@ namespace DataModel
         public virtual DbSet<DiceSkin> DiceSkins { get; set; }
         public virtual DbSet<IngredientSkin> IngredientSkins { get; set; }
         public virtual DbSet<User_Dice_Unlock> User_Dice_Unlock { get; set; }
+        public virtual DbSet<Chest> Chests { get; set; }
     }
 }

@@ -29,6 +29,8 @@ namespace DataModel
             this.GiveawayKeys = new HashSet<GiveawayKey>();
             this.User_Dice_Unlock = new HashSet<User_Dice_Unlock>();
             this.DiceSkins = new HashSet<DiceSkin>();
+            this.IngredientSkins = new HashSet<IngredientSkin>();
+            this.Chests = new HashSet<Chest>();
         }
     
         public int UserId { get; set; }
@@ -77,5 +79,9 @@ namespace DataModel
         public virtual ICollection<User_Dice_Unlock> User_Dice_Unlock { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DiceSkin> DiceSkins { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<IngredientSkin> IngredientSkins { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Chest> Chests { get; set; }
     }
 }
