@@ -5,6 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="PotStirreresDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PotStirreresDB.dbo.AppVersion' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AppVersion">
+          <Key>
+            <PropertyRef Name="AppVersion" />
+          </Key>
+          <Property Name="AppVersion" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+        </EntityType>
         <EntityType Name="Chest">
           <Key>
             <PropertyRef Name="ChestId" />
@@ -390,6 +398,11 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <EntitySet Name="User_Dice_Unlock" EntityType="Self.User_Dice_Unlock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Ingredient_Unlock" EntityType="Self.User_Ingredient_Unlock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Purchase" EntityType="Self.User_Purchase" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppVersion" EntityType="Self.AppVersion" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AppVersion].[AppVersion] AS [AppVersion]
+    FROM [dbo].[AppVersion] AS [AppVersion]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="PlayerProfile" EntityType="Self.PlayerProfile" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [PlayerProfile].[Username] AS [Username], 
@@ -546,6 +559,7 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
             <End Role="Player" EntitySet="Players" />
             <End Role="Chest" EntitySet="Chests" />
           </AssociationSet>
+          <EntitySet Name="AppVersions" EntityType="PotStirreresDBModel.AppVersion" />
           </EntityContainer>
         <EntityType Name="GameAnalytic">
           <Key>
@@ -859,6 +873,12 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AppVersion">
+          <Key>
+            <PropertyRef Name="AppVersion1" />
+          </Key>
+          <Property Name="AppVersion1" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1032,6 +1052,13 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
                 <ScalarProperty Name="ChestSize" ColumnName="ChestSize" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="ChestId" ColumnName="ChestId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppVersions">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.AppVersion">
+              <MappingFragment StoreEntitySet="AppVersion">
+                <ScalarProperty Name="AppVersion1" ColumnName="AppVersion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

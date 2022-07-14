@@ -31,6 +31,7 @@
         <AssociationConnector Association="PotStirreresDBModel.User_Ingredient_Unlock" />
         <EntityTypeShape EntityType="PotStirreresDBModel.Chest" Width="1.5" PointX="1.375" PointY="13.125" />
         <AssociationConnector Association="PotStirreresDBModel.FK_Chest_Player" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.AppVersion" Width="1.5" PointX="0.75" PointY="9.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

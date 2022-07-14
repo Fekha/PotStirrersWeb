@@ -13,7 +13,7 @@ namespace PotStirrersWebAPI.Controllers
     {
 
         TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-
+        Random random = new Random();
         [HttpGet]
         [Route("api/purchase/GetPlayerPurchasables")]
         public IHttpActionResult GetPlayerPurchases(int UserId)
@@ -70,15 +70,20 @@ namespace PotStirrersWebAPI.Controllers
             }
         }
         
-        [HttpPost]
+        [HttpGet]
         [Route("api/purchase/UpdateDiceSkins")]
-        public IHttpActionResult UpdateDiceSkins(int UserId, List<int> data)
+        public IHttpActionResult UpdateDiceSkins(int UserId, int dieId, bool add)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
-                dbPlayer.DiceSkins.Clear();
-                data.ForEach(x => dbPlayer.DiceSkins.Add(context.DiceSkins.FirstOrDefault(y=>y.DiceSkinId == x)));
+                if (add && !dbPlayer.DiceSkins.Any(x => x.DiceSkinId == dieId)) {
+                    dbPlayer.DiceSkins.Add(context.DiceSkins.FirstOrDefault(x => x.DiceSkinId == dieId));
+                }
+                if (!add && dbPlayer.DiceSkins.Any(x => x.DiceSkinId == dieId))
+                {
+                    dbPlayer.DiceSkins.Remove(context.DiceSkins.FirstOrDefault(x => x.DiceSkinId == dieId));
+                }
                 context.SaveChanges();
                 return Json(dbPlayer);
             }
@@ -155,7 +160,7 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
-                var chests = context.Chests.Where(x=>x.UserId == UserId && !x.IsOpened).Select(x=> new ChestDTO(){ ChestId = x.ChestId, ChestSize = x.ChestSize ?? 1}).ToList();
+                var chests = context.Chests.Where(x=>x.UserId == UserId && !x.IsOpened).Select(x=> new ChestDTO(){ ChestId = x.ChestId, ChestSize = x.ChestSize ?? 1}).Take(4).ToList();
                 return Json(chests);
             }
         }
@@ -189,7 +194,7 @@ namespace PotStirrersWebAPI.Controllers
                         {
                             DiceSkinId = x.DiceSkinId,
                             UserId = UserId,
-                            DiceFaceUnlockedQty = 1
+                            DiceFaceUnlockedQty = 1,
                         };
                         context.User_Dice_Unlock.Add(die);
                     }
@@ -197,7 +202,8 @@ namespace PotStirrersWebAPI.Controllers
                     unlockedSkin.Add(new SkinDTO()
                     {
                         SkinId = die.DiceSkinId,
-                        UnlockedQty = die.DiceFaceUnlockedQty
+                        UnlockedQty = die.DiceFaceUnlockedQty,
+                        Rarity = die.DiceSkin.Rarity
                     });
                 });
                 context.SaveChanges();
@@ -207,20 +213,22 @@ namespace PotStirrersWebAPI.Controllers
 
         private int getDieToUnlock()
         {
-            Random random = new Random();
-            var rarity = random.Next(0, 11);
-            if (rarity == 10)
+            int returnNum = random.Next(0, 10);
+            int rarity = random.Next(0, 10);
+            rarity = random.Next(0, 10);
+            if (rarity == 9)
             {
-                return random.Next(10, 13);
+                returnNum = random.Next(10, 13);
             }
-            else if (rarity > 6)
+            else if (rarity > 5)
             {
-                return random.Next(7, 10);
+                returnNum = random.Next(7, 10);
             }
             else
             {
-                return random.Next(1, 7);
+                returnNum = random.Next(1, 7);
             }
+            return returnNum;
         }
 
         //[HttpGet]

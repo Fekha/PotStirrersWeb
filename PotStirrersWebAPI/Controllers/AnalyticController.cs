@@ -14,6 +14,8 @@ namespace PotStirrersWebAPI.Controllers
     {
         private static Queue<int> UsersSearching = new Queue<int>();
         private static List<GameState> ActiveGames = new List<GameState>();
+        private static List<PlayerPing> Pings = new List<PlayerPing>();
+
         TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
         private int CreateGame(int Player1, int Player2) {
@@ -34,8 +36,17 @@ namespace PotStirrersWebAPI.Controllers
 
         [HttpGet]
         [Route("api/Analytic/GameStart")]
-        public IHttpActionResult GameStart(int Player1, int Player2, bool WineMenu)
+        public IHttpActionResult GameStart(int Player1, int Player2, bool FakeOnlineGame = false)
         {
+            if (FakeOnlineGame)
+            {
+                using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+                {
+                    var playerX = context.Players.FirstOrDefault(x => x.UserId == Player1);
+                    playerX.Stars -= 150;
+                    context.SaveChanges();
+                }
+            }
             return Json(CreateGame(Player1, Player2));
         }
 
@@ -53,71 +64,113 @@ namespace PotStirrersWebAPI.Controllers
 
         [HttpGet]
         [Route("api/Analytic/CheckGameAlive")]
-        public IHttpActionResult CheckGameAlive(int UserId, int GameId)
+        public IHttpActionResult CheckGameAlive(int UserId, int GameId, int OtherUserId)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             var timePast = timeNow.AddMinutes(-1);
+            UpdatePing(UserId);
             var game = ActiveGames.FirstOrDefault(x => (x.Player1.UserId == UserId || x.Player2.UserId == UserId) && x.GameId == GameId);
             if (game == null)
             {
-                return Json(false);
+                return Json(OtherUserId);
             }
-            if (game.Player1.UserId == UserId)
-            {
-                game.Player1Ping = timeNow;
-            }
-            if (game.Player2.UserId == UserId)
-            {
-                game.Player2Ping = timeNow;
-            }
-            if (game.Player1Ping < timePast || game.Player2Ping < timePast)
+            if (Pings.FirstOrDefault(x => x.UserId == game.Player1.UserId).PlayerLastPing < timePast)
             {
                 ActiveGames.Remove(game);
-                return Json(false);
+                return Json(game.Player1.UserId);
             }
-            return Json(true);
+            else if (Pings.FirstOrDefault(x => x.UserId == game.Player2.UserId).PlayerLastPing < timePast)
+            {
+                ActiveGames.Remove(game);
+                return Json(game.Player2.UserId);
+            }
+            return Json(0);
         }
-        
+
+        //private void UpdatePing(int UserId, int GameId)
+        //{
+        //    var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
+        //    var game = ActiveGames.FirstOrDefault(x => (x.Player1.UserId == UserId || x.Player2.UserId == UserId) && x.GameId == GameId);
+        //    if (game != null)
+        //    {
+        //        if (game.Player1.UserId == UserId)
+        //        {
+        //            game.Player1Ping = timeNow;
+        //        }
+        //        if (game.Player2.UserId == UserId)
+        //        {
+        //            game.Player2Ping = timeNow;
+        //        }
+        //    }
+        //}
+
         [HttpGet]
         [Route("api/Analytic/UpdateGameRoll")]
-        public IHttpActionResult UpdateGameRoll(int GameId, int roll1, int roll2)
+        public IHttpActionResult UpdateGameRoll(int UserId, int GameId, int roll1, int roll2)
         {
+            UpdatePing(UserId);
             var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
             if (game != null)
-                game.GameRolls.Enqueue(new GameRoll() { roll1 = roll1, roll2 = roll2 });
+                game.GameRolls.Enqueue(new GameRoll() {UserId = UserId, roll1 = roll1, roll2 = roll2 });
             return Json(true);
         }
 
         [HttpGet]
         [Route("api/Analytic/GetGameRoll")]
-        public IHttpActionResult GetGameLastRoll(int GameId)
+        public IHttpActionResult GetGameLastRoll(int UserId, int GameId)
         {
+            UpdatePing(UserId);
             GameRoll roll = null;
             var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
-            if (game != null && game.GameRolls.Count > 0)
+            if (game != null && game.GameRolls.Count > 0 && game.GameRolls.Peek().UserId != UserId)
                 roll = game.GameRolls.Dequeue();
             return Json(roll);
         }
 
         [HttpGet]
         [Route("api/Analytic/UpdateTurn")]
-        public IHttpActionResult UpdateTurn(int GameId, int IngId, bool Higher)
+        public IHttpActionResult UpdateTurn(int UserId, int GameId, int IngId, bool Higher)
         {
+            UpdatePing(UserId);
             var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
             if(game != null)
-                game.GameTurns.Enqueue(new GameTurn() { IngId = IngId, Higher = Higher });
+                game.GameTurns.Enqueue(new GameTurn() {UserId = UserId, IngId = IngId, Higher = Higher });
             return Json(true);
         }
 
         [HttpGet]
         [Route("api/Analytic/GetTurn")]
-        public IHttpActionResult GetTurn(int GameId)
+        public IHttpActionResult GetTurn(int UserId, int GameId)
         {
+            UpdatePing(UserId);
             GameTurn turn = null;
             var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
-            if (game != null && game.GameTurns.Count > 0)
+            if (game != null && game.GameTurns.Count > 0 && game.GameTurns.Peek().UserId != UserId)
                 turn = game.GameTurns.Dequeue();
             return Json(turn);
+        }   
+        
+        [HttpGet]
+        [Route("api/Analytic/UpdateSelected")]
+        public IHttpActionResult UpdateSelected(int UserId, int GameId, bool Higher)
+        {
+            UpdatePing(UserId);
+            var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
+            if(game != null)
+                game.GameSelections.Enqueue(new GameSelections() {UserId = UserId, Selection = Higher });
+            return Json(true);
+        }
+
+        [HttpGet]
+        [Route("api/Analytic/GetSelected")]
+        public IHttpActionResult GetSelected(int UserId, int GameId)
+        {
+            UpdatePing(UserId);
+            bool? sel = null;
+            var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
+            if (game != null && game.GameSelections.Count > 0 && game.GameSelections.Peek().UserId != UserId)
+                sel = game.GameSelections.Dequeue().Selection;
+            return Json(sel);
         }   
         
         [HttpGet]
@@ -177,7 +230,14 @@ namespace PotStirrersWebAPI.Controllers
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             var timeForward = timeNow.AddMinutes(1);
-
+            var timeBackward = timeNow.AddSeconds(-30);
+            UpdatePing(UserId);
+            //prune
+            if (Pings.Any(x => x.PlayerLastPing < timeBackward))
+            {
+                var prunableQue = Pings.Where(x => x.PlayerLastPing < timeBackward).Select(x => x.UserId).ToList();
+                UsersSearching = new Queue<int>(UsersSearching.Where(x => !prunableQue.Contains(x)));
+            }
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 var game = ActiveGames.FirstOrDefault(x => x.Player1.UserId == UserId || x.Player2.UserId == UserId);
@@ -200,6 +260,9 @@ namespace PotStirrersWebAPI.Controllers
                         var queuedId = UsersSearching.Dequeue();
                         var playerX = context.Players.FirstOrDefault(x => x.UserId == queuedId);
                         var playerY = context.Players.FirstOrDefault(x => x.UserId == UserId);
+                        playerX.Stars -= 150;
+                        playerY.Stars -= 150;
+                        context.SaveChanges();
                         PlayerDTO p1;
                         PlayerDTO p2;
                         if (playerX.Wins > playerY.Wins)
@@ -223,10 +286,9 @@ namespace PotStirrersWebAPI.Controllers
                             CreatedDate = timeNow,
                             StartedPlaying = false,
                             ShouldTrash = null,
-                            Player1Ping = timeNow,
-                            Player2Ping = timeNow,
                             IsPlayer1Turn = turn,
                             GameTurns = new Queue<GameTurn>(),
+                            GameSelections = new Queue<GameSelections>(),
                             GameRolls = new Queue<GameRoll>()
                         });
                         return Json(newGameId);
@@ -238,8 +300,22 @@ namespace PotStirrersWebAPI.Controllers
                 }
                 return Json(0);
             }
-        } 
-        
+        }
+
+        private void UpdatePing(int UserId)
+        {
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
+            var ping = Pings.FirstOrDefault(x => x.UserId == UserId);
+            if (ping != null)
+            {
+                ping.PlayerLastPing = timeNow;
+            }
+            else
+            {
+                Pings.Add(new PlayerPing(UserId, timeNow));
+            }
+        }
+
         [HttpGet]
         [Route("api/Analytic/StopLookingforGame")]
         public IHttpActionResult StopLookingforGame(int UserId)
@@ -250,8 +326,20 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("api/Analytic/CPUGameWon")]
+        public IHttpActionResult CPUGameWon(int UserId)
+        {
+            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+            {
+                var player1 = context.Players.FirstOrDefault(x => x.UserId == UserId);
+                player1.Stars += 50;
+                return Json(true);
+            }
+        }
+
+        [HttpGet]
         [Route("api/Analytic/GameEnd")]
-        public IHttpActionResult GameEnd(int GameId, int Player1Cooked, int Player2Cooked, int TotalTurns, bool HardMode = false, bool RageQuit = false)
+        public IHttpActionResult GameEnd(int GameId, int Player1Cooked, int Player2Cooked, int TotalTurns, int RageQuit = 0)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
@@ -259,41 +347,116 @@ namespace PotStirrersWebAPI.Controllers
                 ActiveGames.Remove(game);
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
-                var BonusXP = HardMode ? 100 : 0;
-                var BonusStars = HardMode ? 50 : 0;
+                var rewardsGiven = false;
                 var oldGame = context.GameAnalytics.FirstOrDefault(x => x.GameId == GameId);
-                oldGame.GameEndTime = timeNow;
-                oldGame.Player1CookedNum = Player1Cooked;
-                oldGame.Player2CookedNum = Player2Cooked;
-                oldGame.TotalTurns = TotalTurns;
-                context.SaveChanges();
+                if (oldGame.GameEndTime == null)
+                {
+                    oldGame.GameEndTime = timeNow;
+                    oldGame.Player1CookedNum = Player1Cooked;
+                    oldGame.Player2CookedNum = Player2Cooked;
+                    oldGame.TotalTurns = TotalTurns;
+                    context.SaveChanges();
+                }
+                else
+                {
+                    rewardsGiven = true;
+                }
+                bool player1Won = false;
                
                 var player1 = context.Players.FirstOrDefault(x => x.UserId == oldGame.Player.UserId);
                 var player2 = context.Players.FirstOrDefault(x => x.UserId == oldGame.Player1.UserId);
-                var Player1IsCPU = player1.Password == "CPU";
-                var Player2IsCPU = player2.Password == "CPU";
-                if (TotalTurns > 20)
-                {
-                    if (Player1Cooked > Player2Cooked)
-                    {
-                        player1.Xp += BonusXP + 300 + ((3 - Player2Cooked) * 50);
-                        player2.Xp += BonusXP + 150 + (Player2Cooked * 50) * (RageQuit ? 0 : 1);
-                    }
-                    else if (Player1Cooked < Player2Cooked)
-                    {
-                        player2.Xp += BonusXP + 300 + ((3 - Player1Cooked) * 50);
-                        player1.Xp += BonusXP + 150 + (Player1Cooked * 50) * (RageQuit ? 0 : 1);
-                    }
 
-                    player1.Stars += BonusStars + (Player1Cooked * 50);
-                    player2.Stars += BonusStars + (Player2Cooked * 50);
+                if (RageQuit != 0)
+                {
+                    if (player1.UserId == RageQuit)
+                    {
+                        player1Won = false;
+                    }
+                    else if (player2.UserId == RageQuit)
+                    {
+                        player1Won = true;
+                    }
+                }
+                else
+                {
+                    if (Player1Cooked == 4)
+                    {
+                        player1Won = true;
+                    }
+                    else
+                    {
+                        player1Won = false;
+                    }
+                }
+                var winner = (player1Won ? player1 : player2);
+                var loser = (player1Won ? player2 : player1);
+                if (!rewardsGiven)
+                {
+                    if (TotalTurns >= 20)
+                    {
+                        if (winner.Chests.Where(x => !x.IsOpened).Count() < 4)
+                        {
+                            var chestEarned = getChest();
+                            context.Chests.Add(new Chest()
+                            {
+                                ChestSize = chestEarned,
+                                UserId = winner.UserId
+                            });
+                        }
+                        if (player1Won)
+                        {
+                            player1.Stars += 300;
+                        }
+                        else
+                        {
+                            player2.Stars += 300;
+                        }
+                    }
+                    else
+                    {
+                        if (player1Won)
+                        {
+                            player1.Stars += 150;
+                        }
+                        else
+                        {
+                            player2.Stars += 150;
+                        }
+                    }
+                    player1.Xp += Player1Cooked * 50;
+                    player2.Xp += Player2Cooked * 50;
+
                     player1.Cooked += Player1Cooked;
                     player2.Cooked += Player2Cooked;
+                    context.SaveChanges();
                 }
+                var gameLastedText = $"{(TotalTurns < 20?"!" : " and a Dice Pack!")} \n \n The match lasted {TotalTurns} turns! {(TotalTurns < 20 ? "Since the round didn't last 20 turns no rewards were earned" : "")}";
+                var message = "";
+                if (RageQuit == 0) {
+                    message += $" {winner.Username} Won! \n \n They";
+                } else {
+                    message += $" {loser.Username} Quit! \n \n {winner.Username}";
+                }
+                message += $" earned 300 Calories{gameLastedText} \n \n Each Player earned 50 XP per cooked ingredient";
+                return Json(message);
+            }
+        }
 
-                context.SaveChanges();
-
-                return Json(true);
+        private int getChest()
+        {
+            Random random = new Random();
+            var rarity = random.Next(0, 10);
+            if (rarity == 9)
+            {
+                return 3;
+            }
+            else if (rarity > 5)
+            {
+                return 2;
+            }
+            else
+            {
+                return 1;
             }
         }
     }

@@ -83,8 +83,6 @@ namespace PotStirrersWebAPI.Controllers
             }
         } 
         
-        
-
         [HttpGet]
         [Route("api/player/RegisterUser")]
         public IHttpActionResult RegisterUser(string username, string password, bool rememberMe, Guid deviceId)
@@ -141,9 +139,18 @@ namespace PotStirrersWebAPI.Controllers
                 return Json(dbPlayer);
             }
         }
-        
-    
-        
+
+        [HttpGet]
+        [Route("api/player/GetAppVersion")]
+        public IHttpActionResult GetAppVersion()
+        {
+            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+            {
+                var ver = context.AppVersions.FirstOrDefault();
+                return Json(ver.AppVersion1);
+            }
+        }
+
         [HttpGet]
         [Route("api/player/UpdateLevel")]
         public IHttpActionResult UpdateLevel(int userId)
@@ -156,11 +163,12 @@ namespace PotStirrersWebAPI.Controllers
                 var player = context.Players.FirstOrDefault(x => x.UserId == userId);
                 if (player != null)
                 {
-                    while(player.Xp >= (300 + (player.Level * 25)))
+                    var amountToLevel = (100 + (player.Level * 50));
+                    while (player.Xp >= amountToLevel)
                     {
                         var starsToGain = (player.Level * 5) + 100;
                         leveledUp = true;
-                        player.Xp -= (300 + (player.Level * 25));
+                        player.Xp -= amountToLevel;
                         player.Level += 1;
                         player.Stars += starsToGain;
                         starsGained += starsToGain;
