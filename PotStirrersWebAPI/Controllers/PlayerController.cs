@@ -10,7 +10,7 @@ using System.Web.Http;
 
 namespace PotStirrersWebAPI.Controllers
 {
-    public class PlayersController : ApiController
+    public class PlayerController : ApiController
     {
         TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
@@ -124,6 +124,10 @@ namespace PotStirrersWebAPI.Controllers
                     {
                         ChestSize = 3
                     });
+                    user.SelectedTitles.Add(new SelectedTitle()
+                    {
+                        TitleId = 1
+                    });
                     user.Players.Add(feca);
                     feca.Players.Add(user);
                     context.SaveChanges();
@@ -154,10 +158,14 @@ namespace PotStirrersWebAPI.Controllers
 
         [HttpGet]
         [Route("api/player/GetAppVersion")]
-        public IHttpActionResult GetAppVersion()
+        public IHttpActionResult GetAppVersion(int UserId = 0)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
+                if (UserId != 0)
+                {
+                    MultiplayerController.UpdatePing(UserId);
+                }
                 var ver = context.AppVersions.FirstOrDefault();
                 return Json(ver.AppVersion1);
             }

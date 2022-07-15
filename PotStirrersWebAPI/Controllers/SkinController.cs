@@ -28,7 +28,7 @@ namespace PotStirrersWebAPI.Controllers
                     reward.IsClaimed = true;
                     reward.ClaimedTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
                     reward.ClaimedById = userId;
-                    player.Stars += reward.RewardAmount;
+                    player.Calories += reward.RewardAmount;
                     context.SaveChanges();
                     return Json(reward.RewardAmount);
                 }
@@ -38,17 +38,17 @@ namespace PotStirrersWebAPI.Controllers
         
         [HttpGet]
         [Route("api/skin/UpdateDiceSkins")]
-        public IHttpActionResult UpdateDiceSkins(int UserId, int dieId, bool add)
+        public IHttpActionResult UpdateDiceSkins(int UserId, int skinId, bool add)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
-                if (add && !dbPlayer.DiceSkins.Any(x => x.DiceSkinId == dieId)) {
-                    dbPlayer.DiceSkins.Add(context.DiceSkins.FirstOrDefault(x => x.DiceSkinId == dieId));
+                if (add && !dbPlayer.DiceSkins.Any(x => x.DiceSkinId == skinId)) {
+                    dbPlayer.DiceSkins.Add(context.DiceSkins.FirstOrDefault(x => x.DiceSkinId == skinId));
                 }
-                if (!add && dbPlayer.DiceSkins.Any(x => x.DiceSkinId == dieId))
+                if (!add && dbPlayer.DiceSkins.Any(x => x.DiceSkinId == skinId))
                 {
-                    dbPlayer.DiceSkins.Remove(context.DiceSkins.FirstOrDefault(x => x.DiceSkinId == dieId));
+                    dbPlayer.DiceSkins.Remove(context.DiceSkins.FirstOrDefault(x => x.DiceSkinId == skinId));
                 }
                 context.SaveChanges();
                 return Json(true);
@@ -72,23 +72,43 @@ namespace PotStirrersWebAPI.Controllers
                 context.SaveChanges();
                 return Json(true);
             }
-        }  
-
-        //[HttpGet]
-        //[Route("api/skin/GetAllIngredientSkins")]
-        //public IHttpActionResult GetAllIngredientSkins()
-        //{
-        //    using (PotStirreresDBEntities context = new PotStirreresDBEntities())
-        //    {
-        //        var skins = context.IngredientSkins.Select(x => new SkinDTO()
-        //        {
-        //            SkinId = x.IngredientSkinId,
-        //            SkinName = x.IngredientSkinName
-        //        }).ToList();
-        //        return Json(skins);
-        //    }
-        //}   
+        }   
         
+        [HttpGet]
+        [Route("api/skin/UpdateTitle")]
+        public IHttpActionResult UpdateTitle(int UserId, int skinId, bool add)
+        {
+            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+            {
+                var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
+                if (add && !dbPlayer.Titles.Any(x => x.TitleId == skinId)) {
+                    dbPlayer.Titles.Add(context.Titles.FirstOrDefault(x => x.TitleId == skinId));
+                }
+                if (!add && dbPlayer.Titles.Any(x => x.TitleId == skinId))
+                {
+                    dbPlayer.Titles.Remove(context.Titles.FirstOrDefault(x => x.TitleId == skinId));
+                }
+                context.SaveChanges();
+                return Json(true);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/skin/GetAllTitles")]
+        public IHttpActionResult GetAllTitles()
+        {
+            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+            {
+                var skins = context.Titles.Select(x => new SkinDTO()
+                {
+                    SkinId = x.TitleId,
+                    SkinName = x.TitleName,
+                    SkinDesc = x.EarnDescription
+                }).ToList();
+                return Json(skins);
+            }
+        }
+
         [HttpGet]
         [Route("api/skin/GetMyIngredientSkins")]
         public IHttpActionResult GetMyIngredientSkins(int UserId)
@@ -132,6 +152,22 @@ namespace PotStirrersWebAPI.Controllers
                     SkinId = x.DiceSkinId,
                     IsUnlocked = x.DieOwned,
                     UnlockedQty = x.DiceFaceUnlockedQty
+                }).ToList();
+                return Json(skins);
+            }
+        } 
+        
+        [HttpGet]
+        [Route("api/skin/GetMyTitles")]
+        public IHttpActionResult GetMyTitles(int UserId)
+        {
+            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+            {
+                var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
+                var skins = dbPlayer.Titles.Select(x => new SkinDTO()
+                {
+                    SkinId = x.TitleId,
+                    IsUnlocked = true
                 }).ToList();
                 return Json(skins);
             }

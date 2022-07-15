@@ -114,12 +114,6 @@ warning 6002: The table/view 'PotStirreresDB.dbo.AppVersion' does not have a pri
           <Property Name="Cooked" Type="int" Nullable="false" />
           <Property Name="LocalWins" Type="int" Nullable="false" />
           <Property Name="Wins" Type="int" Nullable="false" />
-          <Property Name="SelectedMeat" Type="int" Nullable="false" />
-          <Property Name="SelectedVeggie" Type="int" Nullable="false" />
-          <Property Name="SelectedFruit" Type="int" Nullable="false" />
-          <Property Name="SelectedFourthIngredient" Type="int" Nullable="false" />
-          <Property Name="SelectedDie" Type="int" Nullable="false" />
-          <Property Name="SelectedDie2" Type="int" Nullable="false" />
           <Property Name="WineMenu" Type="bit" Nullable="false" />
           <Property Name="UseD8s" Type="bit" Nullable="false" />
           <Property Name="DisableDoubles" Type="bit" Nullable="false" />

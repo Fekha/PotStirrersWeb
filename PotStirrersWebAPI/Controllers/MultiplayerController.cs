@@ -16,7 +16,7 @@ namespace PotStirrersWebAPI.Controllers
         private static List<GameState> ActiveGames = new List<GameState>();
         private static List<PlayerPing> Pings = new List<PlayerPing>();
 
-        TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        private static TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
         private int CreateGame(int Player1, int Player2) {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
@@ -230,7 +230,7 @@ namespace PotStirrersWebAPI.Controllers
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             var timeForward = timeNow.AddMinutes(1);
-            var timeBackward = timeNow.AddSeconds(-5);
+            var timeBackward = timeNow.AddSeconds(-10);
             UpdatePing(UserId);
             //prune
             if (Pings.Any(x => x.PlayerLastPing < timeBackward))
@@ -302,7 +302,7 @@ namespace PotStirrersWebAPI.Controllers
             }
         }
 
-        private void UpdatePing(int UserId)
+        public static void UpdatePing(int UserId)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             var ping = Pings.FirstOrDefault(x => x.UserId == UserId);

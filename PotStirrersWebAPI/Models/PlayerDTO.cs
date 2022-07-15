@@ -13,6 +13,7 @@ public class PlayerDTO
         Wins = x.Wins;
         SelectedDice = x.DiceSkins.Select(y=> y.DiceSkinId).ToList();
         SelectedIngs = x.IngredientSkins.Select(y=> y.IngredientSkinId).ToList();
+        SelectedTitles = x.Titles.Select(y=> y.TitleName).ToList();
         WineMenu = x.WineMenu;
         UseD8s = x.UseD8s;
         DisableDoubles = x.DisableDoubles;
@@ -32,6 +33,7 @@ public class PlayerDTO
     public string Password { get; set; }
     public List<int> SelectedDice { get; set; }
     public List<int> SelectedIngs { get; set; }
+    public List<string> SelectedTitles { get; set; }
     public int Stars { get; set; }
     public int Cooked { get; set; }
     public int Xp { get; set; }
