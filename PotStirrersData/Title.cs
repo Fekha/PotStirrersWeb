@@ -12,21 +12,18 @@ namespace DataModel
     using System;
     using System.Collections.Generic;
     
-    public partial class IngredientSkin
+    public partial class Title
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public IngredientSkin()
+        public Title()
         {
-            this.User_Ingredient_Unlock = new HashSet<User_Ingredient_Unlock>();
             this.Players = new HashSet<Player>();
         }
     
-        public int IngredientSkinId { get; set; }
-        public string IngredientSkinName { get; set; }
-        public int Rarity { get; set; }
+        public int TitleId { get; set; }
+        public string TitleName { get; set; }
+        public string EarnDescription { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User_Ingredient_Unlock> User_Ingredient_Unlock { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Player> Players { get; set; }
     }

@@ -12,14 +12,11 @@ namespace DataModel
     using System;
     using System.Collections.Generic;
     
-    public partial class User_Dice_Unlock
+    public partial class SelectedTitle
     {
         public int UserId { get; set; }
-        public int DiceSkinId { get; set; }
-        public int DiceFaceUnlockedQty { get; set; }
-        public bool DieOwned { get; set; }
+        public int TitleId { get; set; }
     
-        public virtual DiceSkin DiceSkin { get; set; }
         public virtual Player Player { get; set; }
     }
 }

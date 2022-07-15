@@ -99,7 +99,7 @@ namespace PotStirrersWebAPI.Controllers
                         Password = password,
                         CreatedDate = timeNow,
                         Email = "",
-                        Stars = 900,
+                        Calories = 900,
                         Level = 1
                     };
                     var feca = context.Players.FirstOrDefault(x => x.UserId == 5);
@@ -111,6 +111,18 @@ namespace PotStirrersWebAPI.Controllers
                         Body = "You are amazing! Please let me know any and all feedback you might have!",
                         FromId = 5,
                         CreatedDate = timeNow
+                    });
+                    user.Chests.Add(new Chest()
+                    {
+                        ChestSize = 1
+                    }); 
+                    user.Chests.Add(new Chest()
+                    {
+                        ChestSize = 2
+                    }); 
+                    user.Chests.Add(new Chest()
+                    {
+                        ChestSize = 3
                     });
                     user.Players.Add(feca);
                     feca.Players.Add(user);
@@ -159,25 +171,25 @@ namespace PotStirrersWebAPI.Controllers
             {
                 string returnText = "";
                 bool leveledUp = false;
-                int starsGained = 0;
+                int caloriesGained = 0;
                 var player = context.Players.FirstOrDefault(x => x.UserId == userId);
                 if (player != null)
                 {
                     var amountToLevel = (100 + (player.Level * 50));
                     while (player.Xp >= amountToLevel)
                     {
-                        var starsToGain = (player.Level * 5) + 100;
+                        var caloriesToGain = (player.Level * 5) + 100;
                         leveledUp = true;
                         player.Xp -= amountToLevel;
                         player.Level += 1;
-                        player.Stars += starsToGain;
-                        starsGained += starsToGain;
+                        player.Calories += caloriesToGain;
+                        caloriesGained += caloriesToGain;
                     }
                 }
                 context.SaveChanges();
                 if (leveledUp)
                 {
-                    returnText = $"Congrats you reached level {player.Level}! \n \n You gained {starsGained} Calories!";
+                    returnText = $"Congrats you reached level {player.Level}! \n \n You gained {caloriesGained} Calories!";
                 }
                 return Json(returnText);
             }
@@ -200,9 +212,9 @@ namespace PotStirrersWebAPI.Controllers
                     {
                         daysLoggedIn++;
                     }
-                    int starsGained = 75 + (Math.Min(daysLoggedIn, 7) * 25);
-                    player.Stars += starsGained;
-                    returnText = $"Day {daysLoggedIn} login bonus: \n \n You gained {starsGained} Calories! {(daysLoggedIn == 7 ? "Great job, the bonus max's out at 7 days, but keep coming back so it wont reset!" : "")}";
+                    int caloriesGained = 75 + (Math.Min(daysLoggedIn, 7) * 25);
+                    player.Calories += caloriesGained;
+                    returnText = $"Day {daysLoggedIn} login bonus: \n \n You gained {caloriesGained} Calories! {(daysLoggedIn == 7 ? "Great job, the bonus max's out at 7 days, but keep coming back so it wont reset!" : "")}";
                 }
 
                 player.LoggedIns.Add(new LoggedIn() {  UserId = player.UserId, LoginDate = timeNow });
@@ -264,7 +276,7 @@ namespace PotStirrersWebAPI.Controllers
                         context.Messages.Add(new Message()
                         {
                             Subject = player.Username + " added you as a friend!",
-                            Body = friend.Player1.Any(x => x.UserId == userId) ? "You have both added each other so you can start sending each other messages!" : "Add them to your friends list to send messages to each other!",
+                            Body = friend.Player1.Any(x => x.UserId == userId) ? "You have both added each other so you can caloriet sending each other messages!" : "Add them to your friends list to send messages to each other!",
                             FromId = player.UserId,
                             UserId = friend.UserId,
                             CreatedDate = timeNow

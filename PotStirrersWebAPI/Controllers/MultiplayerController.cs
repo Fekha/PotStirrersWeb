@@ -10,7 +10,7 @@ using System.Web.Http;
 namespace PotStirrersWebAPI.Controllers
 {
     //hello
-    public class AnalyticController : ApiController
+    public class MultiplayerController : ApiController
     {
         private static Queue<int> UsersSearching = new Queue<int>();
         private static List<GameState> ActiveGames = new List<GameState>();
@@ -35,7 +35,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/GameStart")]
+        [Route("api/Multiplayer/GameStart")]
         public IHttpActionResult GameStart(int Player1, int Player2, bool FakeOnlineGame = false)
         {
             if (FakeOnlineGame)
@@ -51,7 +51,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/FindMyGame")]
+        [Route("api/Multiplayer/FindMyGame")]
         public IHttpActionResult FindMyGame(int UserId, int GameId)
         {
             GameState game = ActiveGames.FirstOrDefault(x => (x.Player1.UserId == UserId || x.Player2.UserId == UserId) && x.GameId == GameId);
@@ -63,7 +63,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/CheckGameAlive")]
+        [Route("api/Multiplayer/CheckGameAlive")]
         public IHttpActionResult CheckGameAlive(int UserId, int GameId, int OtherUserId)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
@@ -105,7 +105,7 @@ namespace PotStirrersWebAPI.Controllers
         //}
 
         [HttpGet]
-        [Route("api/Analytic/UpdateGameRoll")]
+        [Route("api/Multiplayer/UpdateGameRoll")]
         public IHttpActionResult UpdateGameRoll(int UserId, int GameId, int roll1, int roll2)
         {
             UpdatePing(UserId);
@@ -116,7 +116,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/GetGameRoll")]
+        [Route("api/Multiplayer/GetGameRoll")]
         public IHttpActionResult GetGameLastRoll(int UserId, int GameId)
         {
             UpdatePing(UserId);
@@ -128,7 +128,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/UpdateTurn")]
+        [Route("api/Multiplayer/UpdateTurn")]
         public IHttpActionResult UpdateTurn(int UserId, int GameId, int IngId, bool Higher)
         {
             UpdatePing(UserId);
@@ -139,7 +139,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/GetTurn")]
+        [Route("api/Multiplayer/GetTurn")]
         public IHttpActionResult GetTurn(int UserId, int GameId)
         {
             UpdatePing(UserId);
@@ -151,7 +151,7 @@ namespace PotStirrersWebAPI.Controllers
         }   
         
         [HttpGet]
-        [Route("api/Analytic/UpdateSelected")]
+        [Route("api/Multiplayer/UpdateSelected")]
         public IHttpActionResult UpdateSelected(int UserId, int GameId, bool Higher)
         {
             UpdatePing(UserId);
@@ -162,7 +162,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/GetSelected")]
+        [Route("api/Multiplayer/GetSelected")]
         public IHttpActionResult GetSelected(int UserId, int GameId)
         {
             UpdatePing(UserId);
@@ -174,7 +174,7 @@ namespace PotStirrersWebAPI.Controllers
         }   
         
         [HttpGet]
-        [Route("api/Analytic/UpdateShouldTrash")]
+        [Route("api/Multiplayer/UpdateShouldTrash")]
         public IHttpActionResult UpdateShouldTrash(int GameId, bool Trash)
         {
             var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
@@ -184,7 +184,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/GetShouldTrash")]
+        [Route("api/Multiplayer/GetShouldTrash")]
         public IHttpActionResult GetShouldTrash(int GameId)
         {
             bool? answer = null;
@@ -202,7 +202,7 @@ namespace PotStirrersWebAPI.Controllers
         } 
         
         [HttpGet]
-        [Route("api/Analytic/EndTurn")]
+        [Route("api/Multiplayer/EndTurn")]
         public IHttpActionResult EndTurn(int GameId)
         {
             GameState game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
@@ -215,7 +215,7 @@ namespace PotStirrersWebAPI.Controllers
         }
         
         [HttpGet]
-        [Route("api/Analytic/EndGame")]
+        [Route("api/Multiplayer/EndGame")]
         public IHttpActionResult EndGame(int GameId)
         {
             var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
@@ -225,12 +225,12 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/LookforGame")]
+        [Route("api/Multiplayer/LookforGame")]
         public IHttpActionResult LookforGame(int UserId)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             var timeForward = timeNow.AddMinutes(1);
-            var timeBackward = timeNow.AddSeconds(-30);
+            var timeBackward = timeNow.AddSeconds(-5);
             UpdatePing(UserId);
             //prune
             if (Pings.Any(x => x.PlayerLastPing < timeBackward))
@@ -317,7 +317,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/StopLookingforGame")]
+        [Route("api/Multiplayer/StopLookingforGame")]
         public IHttpActionResult StopLookingforGame(int UserId)
         {
             if (UsersSearching.Contains(UserId))
@@ -326,7 +326,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/CPUGameWon")]
+        [Route("api/Multiplayer/CPUGameWon")]
         public IHttpActionResult CPUGameWon(int UserId)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
@@ -338,7 +338,7 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Analytic/GameEnd")]
+        [Route("api/Multiplayer/GameEnd")]
         public IHttpActionResult GameEnd(int GameId, int Player1Cooked, int Player2Cooked, int TotalTurns, int RageQuit = 0)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
@@ -392,6 +392,7 @@ namespace PotStirrersWebAPI.Controllers
                 var loser = (player1Won ? player2 : player1);
                 if (!rewardsGiven)
                 {
+                    winner.OnlineWins++;
                     if (TotalTurns >= 20)
                     {
                         if (winner.Chests.Where(x => !x.IsOpened).Count() < 4)

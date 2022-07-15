@@ -172,8 +172,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\AnalyticController.cs" />
-    <Compile Include="Controllers\PurchaseController.cs" />
+    <Compile Include="Controllers\MultiplayerController.cs" />
+    <Compile Include="Controllers\SkinController.cs" />
     <Compile Include="Controllers\PlayersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

@@ -105,7 +105,7 @@
     <Compile Include="User_Dice_Unlock.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="User_Purchase.cs">
+    <Compile Include="User_Ingredient_Unlock.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
   </ItemGroup>

@@ -11,35 +11,33 @@ public class PlayerDTO
         Password = x.Password;
         UserId = x.UserId;
         Wins = x.Wins;
-        SelectedMeat = x.SelectedMeat;
-        SelectedVeggie = x.SelectedVeggie;
-        SelectedFruit = x.SelectedFruit;
-        SelectedFourth = x.SelectedFourthIngredient;
-        SelectedDie = x.DiceSkins.Select(y=> y.DiceSkinId).ToList();
+        SelectedDice = x.DiceSkins.Select(y=> y.DiceSkinId).ToList();
+        SelectedIngs = x.IngredientSkins.Select(y=> y.IngredientSkinId).ToList();
         WineMenu = x.WineMenu;
         UseD8s = x.UseD8s;
         DisableDoubles = x.DisableDoubles;
         PlayAsPurple = x.PlayAsPurple;
         Stars = x.Stars;
+        Calories = x.Calories;
         Cooked = x.Cooked;
         Xp = x.Xp;
         Level = x.Level;
         LocalWins = x.LocalWins;
+        OnlineWins = x.OnlineWins;
     }
     public int UserId { get; set; }
     public int Wins { get; set; }
     public int LocalWins { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
-    public int SelectedMeat { get; set; }
-    public int SelectedVeggie { get; set; }
-    public int SelectedFruit { get; set; }
-    public int SelectedFourth { get; set; }
-    public List<int> SelectedDie { get; set; }
+    public List<int> SelectedDice { get; set; }
+    public List<int> SelectedIngs { get; set; }
     public int Stars { get; set; }
     public int Cooked { get; set; }
     public int Xp { get; set; }
     public int Level { get; set; }
+    public int Calories { get; set; }
+    public int OnlineWins { get; set; }
     public bool WineMenu { get; set; }
     public bool UseD8s { get; set; }
     public bool DisableDoubles { get; set; }

@@ -29,14 +29,16 @@ namespace DataModel
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<LoggedIn> LoggedIns { get; set; }
-        public virtual DbSet<User_Purchase> User_Purchase { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<PlayerProfile> PlayerProfiles { get; set; }
         public virtual DbSet<GiveawayKey> GiveawayKeys { get; set; }
         public virtual DbSet<DiceSkin> DiceSkins { get; set; }
-        public virtual DbSet<IngredientSkin> IngredientSkins { get; set; }
         public virtual DbSet<User_Dice_Unlock> User_Dice_Unlock { get; set; }
         public virtual DbSet<Chest> Chests { get; set; }
         public virtual DbSet<AppVersion> AppVersions { get; set; }
+        public virtual DbSet<IngredientSkin> IngredientSkins { get; set; }
+        public virtual DbSet<User_Ingredient_Unlock> User_Ingredient_Unlock { get; set; }
+        public virtual DbSet<SelectedTitle> SelectedTitles { get; set; }
+        public virtual DbSet<Title> Titles { get; set; }
     }
 }

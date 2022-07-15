@@ -9,29 +9,14 @@ using System.Web.Http;
 
 namespace PotStirrersWebAPI.Controllers
 {
-    public class PurchaseController : ApiController
+    public class SkinController : ApiController
     {
 
         TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
         Random random = new Random();
-        [HttpGet]
-        [Route("api/purchase/GetPlayerPurchasables")]
-        public IHttpActionResult GetPlayerPurchases(int UserId)
-        {
-            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
-            {
-                var player = context.Players.FirstOrDefault(x => x.UserId == UserId);
-                if (player != null)
-                {
-                    var purchasables = player.User_Purchase.Select(x => x.PurchaseId).ToList();
-                    return Json(purchasables);
-                }
-                return null;
-            }
-        }
 
         [HttpGet]
-        [Route("api/purchase/UseKey")]
+        [Route("api/skin/UseKey")]
         public IHttpActionResult UseKey(int userId, string key)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
@@ -50,28 +35,9 @@ namespace PotStirrersWebAPI.Controllers
                 return Json(0);
             }
         }
-
-        [HttpGet]
-        [Route("api/purchase/UpdateIngredientSkins")]
-        public IHttpActionResult UpdateIngredientSkins(int UserId, int SelectedMeat, int SelectedVeggie, int SelectedFruit, int SelectedFourth)
-        {
-            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
-            {
-                var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
-                if (dbPlayer != null)
-                {
-                    dbPlayer.SelectedMeat = SelectedMeat;
-                    dbPlayer.SelectedVeggie = SelectedVeggie;
-                    dbPlayer.SelectedFruit = SelectedFruit;
-                    dbPlayer.SelectedFourthIngredient = SelectedFourth;
-                }
-                context.SaveChanges();
-                return Json(dbPlayer);
-            }
-        }
         
         [HttpGet]
-        [Route("api/purchase/UpdateDiceSkins")]
+        [Route("api/skin/UpdateDiceSkins")]
         public IHttpActionResult UpdateDiceSkins(int UserId, int dieId, bool add)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
@@ -85,44 +51,77 @@ namespace PotStirrersWebAPI.Controllers
                     dbPlayer.DiceSkins.Remove(context.DiceSkins.FirstOrDefault(x => x.DiceSkinId == dieId));
                 }
                 context.SaveChanges();
-                return Json(dbPlayer);
-            }
-        }  
-
-        [HttpGet]
-        [Route("api/purchase/GetAllIngredientSkins")]
-        public IHttpActionResult GetAllIngredientSkins()
-        {
-            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
-            {
-                var skins = context.IngredientSkins.Select(x => new SkinDTO()
-                {
-                    SkinId = x.IngredientSkinId,
-                    SkinName = x.IngredientSkinName,
-                    UnlockedQty = 0
-                }).ToList();
-                return Json(skins);
+                return Json(true);
             }
         }   
         
         [HttpGet]
-        [Route("api/purchase/GetMyIngredientSkins")]
+        [Route("api/skin/UpdateIngredientSkins")]
+        public IHttpActionResult UpdateIngredientSkins(int UserId, int skinId, bool add)
+        {
+            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+            {
+                var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
+                if (add && !dbPlayer.IngredientSkins.Any(x => x.IngredientSkinId == skinId)) {
+                    dbPlayer.IngredientSkins.Add(context.IngredientSkins.FirstOrDefault(x => x.IngredientSkinId == skinId));
+                }
+                if (!add && dbPlayer.IngredientSkins.Any(x => x.IngredientSkinId == skinId))
+                {
+                    dbPlayer.IngredientSkins.Remove(context.IngredientSkins.FirstOrDefault(x => x.IngredientSkinId == skinId));
+                }
+                context.SaveChanges();
+                return Json(true);
+            }
+        }  
+
+        //[HttpGet]
+        //[Route("api/skin/GetAllIngredientSkins")]
+        //public IHttpActionResult GetAllIngredientSkins()
+        //{
+        //    using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+        //    {
+        //        var skins = context.IngredientSkins.Select(x => new SkinDTO()
+        //        {
+        //            SkinId = x.IngredientSkinId,
+        //            SkinName = x.IngredientSkinName
+        //        }).ToList();
+        //        return Json(skins);
+        //    }
+        //}   
+        
+        [HttpGet]
+        [Route("api/skin/GetMyIngredientSkins")]
         public IHttpActionResult GetMyIngredientSkins(int UserId)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
-                var skins = dbPlayer.IngredientSkins.Select(x => new SkinDTO()
+                var skins = dbPlayer.User_Ingredient_Unlock.Select(x => new SkinDTO()
                 {
                     SkinId = x.IngredientSkinId,
-                    IsUnlocked = dbPlayer.IngredientSkins.Any(y => y.IngredientSkinId == x.IngredientSkinId)
+                    IsUnlocked = x.SkinOwned,
+                    UnlockedQty = x.SkinQty
                 }).ToList();
                 return Json(skins);
             }
         }
-        
+
+        //[HttpGet]
+        //[Route("api/skin/GetAllDiceSkins")]
+        //public IHttpActionResult GetAllDiceSkins(int UserId)
+        //{
+        //    using (PotStirreresDBEntities context = new PotStirreresDBEntities())
+        //    {
+        //        var skins = context.DiceSkins.Select(x => new SkinDTO()
+        //        {
+        //            SkinId = x.DiceSkinId,
+        //            SkinName = x.DiceSkinName
+        //        }).ToList();
+        //        return Json(skins);
+        //    }
+        //}
         [HttpGet]
-        [Route("api/purchase/GetMyDiceSkins")]
+        [Route("api/skin/GetMyDiceSkins")]
         public IHttpActionResult GetMyDiceSkins(int UserId)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
@@ -131,31 +130,15 @@ namespace PotStirrersWebAPI.Controllers
                 var skins = dbPlayer.User_Dice_Unlock.Select(x => new SkinDTO()
                 {
                     SkinId = x.DiceSkinId,
-                    IsUnlocked = x.DiceFaceUnlockedQty >= 9,
+                    IsUnlocked = x.DieOwned,
                     UnlockedQty = x.DiceFaceUnlockedQty
                 }).ToList();
                 return Json(skins);
             }
         } 
-        
+
         [HttpGet]
-        [Route("api/purchase/GetAllDiceSkins")]
-        public IHttpActionResult GetAllDiceSkins(int UserId)
-        {
-            using (PotStirreresDBEntities context = new PotStirreresDBEntities())
-            {
-                var skins = context.DiceSkins.Select(x => new SkinDTO()
-                {
-                    SkinId = x.DiceSkinId,
-                    SkinName = x.DiceSkinName,
-                    UnlockedQty = 0
-                }).ToList();
-                return Json(skins);
-            }
-        } 
-        
-        [HttpGet]
-        [Route("api/purchase/GetMyChests")]
+        [Route("api/skin/GetMyChests")]
         public IHttpActionResult GetChests(int UserId)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
@@ -166,7 +149,7 @@ namespace PotStirrersWebAPI.Controllers
         }
         
         [HttpGet]
-        [Route("api/purchase/OpenMyChest")]
+        [Route("api/skin/OpenMyChest")]
         public IHttpActionResult OpenMyChest(int UserId, int ChestId)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
@@ -185,8 +168,7 @@ namespace PotStirrersWebAPI.Controllers
                     var die = context.User_Dice_Unlock.FirstOrDefault(y => y.DiceSkinId == x.DiceSkinId && y.UserId == UserId);
                     if (die != null)
                     {
-                        if(die.DiceFaceUnlockedQty<9)
-                            die.DiceFaceUnlockedQty++;
+                        die.DiceFaceUnlockedQty++;
                     }
                     else
                     {
@@ -218,43 +200,17 @@ namespace PotStirrersWebAPI.Controllers
             rarity = random.Next(0, 10);
             if (rarity == 9)
             {
-                returnNum = random.Next(10, 13);
+                returnNum = random.Next(16, 19);
             }
             else if (rarity > 5)
             {
-                returnNum = random.Next(7, 10);
+                returnNum = random.Next(10, 16);
             }
             else
             {
-                returnNum = random.Next(1, 7);
+                returnNum = random.Next(1, 10);
             }
             return returnNum;
         }
-
-        //[HttpGet]
-        //[Route("api/purchase/Purchase")]
-        //public IHttpActionResult Purchase(int UserId, int PurchaseId)
-        //{
-        //    using (PotStirreresDBEntities context = new PotStirreresDBEntities())
-        //    {
-        //        var purchase = context.Purchasables.FirstOrDefault(x => x.PurchaseId == PurchaseId);
-        //        var player = context.Players.FirstOrDefault(x => x.UserId == UserId);
-        //        if (player.Stars >= purchase.PurchaseCost)
-        //        {
-        //            context.User_Purchase.Add(new User_Purchase(){
-        //                PurchaseId = purchase.PurchaseId,
-        //                UserId = player.UserId
-        //            });
-        //            player.Stars -= purchase.PurchaseCost;
-        //            context.SaveChanges();
-        //            return Json(true);
-        //        }
-        //        else
-        //        {
-        //            return Json(false);
-        //        }
-        //    }
-        //}
     }
-
 }
