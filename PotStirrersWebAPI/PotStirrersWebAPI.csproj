@@ -182,6 +182,7 @@
     <Compile Include="Models\LeaderboardDTO.cs" />
     <Compile Include="Models\MessageDTO.cs" />
     <Compile Include="Models\FriendDTO.cs" />
+    <Compile Include="Models\ProfileDTO.cs" />
     <Compile Include="Models\PurchasableDTO.cs" />
     <Compile Include="Models\PlayerDTO.cs" />
     <Compile Include="Models\ChestDTO.cs" />

@@ -20,7 +20,8 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
-                return context.Players.Where(x => x.Username == username).ToList().Select(x => new PlayerDTO(x)).FirstOrDefault();
+                var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
+                return context.Players.Where(x => x.Username == username).ToList().Select(x => new PlayerDTO(x, timeNow)).FirstOrDefault();
             }
         }
 
@@ -88,6 +89,7 @@ namespace PotStirrersWebAPI.Controllers
         public IHttpActionResult RegisterUser(string username, string password, bool rememberMe, Guid deviceId)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
+            Random random = new Random();
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 Player user = null;
@@ -114,20 +116,20 @@ namespace PotStirrersWebAPI.Controllers
                     });
                     user.Chests.Add(new Chest()
                     {
-                        ChestSize = 1
+                        ChestSize = 1,
+                        ChestTypeId = random.Next(1, 3)
                     }); 
                     user.Chests.Add(new Chest()
                     {
-                        ChestSize = 2
-                    }); 
+                        ChestSize = 2,
+                        ChestTypeId = random.Next(1, 3)
+                    });
                     user.Chests.Add(new Chest()
                     {
-                        ChestSize = 3
+                        ChestSize = 3,
+                        ChestTypeId = random.Next(1, 3)
                     });
-                    user.SelectedTitles.Add(new SelectedTitle()
-                    {
-                        TitleId = 1
-                    });
+                    user.Titles.Add(context.Titles.FirstOrDefault(x=>x.TitleId == 1));
                     user.Players.Add(feca);
                     feca.Players.Add(user);
                     context.SaveChanges();
@@ -208,7 +210,7 @@ namespace PotStirrersWebAPI.Controllers
         public IHttpActionResult CheckForReward(int userId)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
-
+            Random random = new Random();
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 string returnText = "";
@@ -222,7 +224,14 @@ namespace PotStirrersWebAPI.Controllers
                     }
                     int caloriesGained = 75 + (Math.Min(daysLoggedIn, 7) * 25);
                     player.Calories += caloriesGained;
-                    returnText = $"Day {daysLoggedIn} login bonus: \n \n You gained {caloriesGained} Calories! {(daysLoggedIn == 7 ? "Great job, the bonus max's out at 7 days, but keep coming back so it wont reset!" : "")}";
+                    var chestEarned = MultiplayerController.getChest();
+                    context.Chests.Add(new Chest()
+                    {
+                        ChestSize = chestEarned,
+                        UserId = player.UserId,
+                        ChestTypeId = random.Next(1, 3)
+                    });
+                    returnText = $"Day {daysLoggedIn} login bonus: \n \n You gained {caloriesGained} Calories, and a random skin pack! {(daysLoggedIn == 7 ? "Great job, the bonus max's out at 7 days, but keep coming back so it wont reset!" : "")}";
                 }
 
                 player.LoggedIns.Add(new LoggedIn() {  UserId = player.UserId, LoginDate = timeNow });
@@ -237,20 +246,25 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {             
-                return Json(context.PlayerProfiles.Where(x=>x.Username != "Jenn" && x.Username != "Chrissy" && x.Username != "Zach" && x.Username != "Joe").ToList());
+                return Json(context.PlayerProfiles.Where(x=>x.Username != "Jenn" && x.Username != "Chrissy" && x.Username != "Zach" && x.Username != "Joe" && x.Username != "Guest" && x.Username != "Ethan").ToList());
             }
         }
 
         [HttpGet]
         [Route("api/player/GetProfile")]
-        public IHttpActionResult GetProfile(string username)
+        public IHttpActionResult GetProfile(int UserId)
         {
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
-                return Json(context.PlayerProfiles.FirstOrDefault(x => x.Username == username));
+                var profile = new ProfileDTO(context.PlayerProfiles.FirstOrDefault(x => x.UserId == UserId));
+                var ping = MultiplayerController.Pings.FirstOrDefault(x => x.UserId == UserId);
+                var timeBackward = timeNow.AddSeconds(-10);
+                profile.IsOnline = ping != null && ping.PlayerLastPing > timeBackward;
+                return Json(profile);
             }
         }
-        
+
         [HttpGet]
         [Route("api/player/GetFriends")]
         public IHttpActionResult GetFriends(int userId)
@@ -258,6 +272,7 @@ namespace PotStirrersWebAPI.Controllers
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 var friends = context.Players.FirstOrDefault(x => x.UserId == userId).Player1.Select(y => new FriendDTO() { 
+                    UserId = y.UserId,
                     Username = y.Username,
                     RealFriend = y.Player1.Any(z => z.UserId == userId),
                     Level = y.Level
@@ -284,7 +299,7 @@ namespace PotStirrersWebAPI.Controllers
                         context.Messages.Add(new Message()
                         {
                             Subject = player.Username + " added you as a friend!",
-                            Body = friend.Player1.Any(x => x.UserId == userId) ? "You have both added each other so you can caloriet sending each other messages!" : "Add them to your friends list to send messages to each other!",
+                            Body = friend.Player1.Any(x => x.UserId == userId) ? "You have both added each other so you can start sending each other messages!" : "Add them to your friends list to send messages to each other!",
                             FromId = player.UserId,
                             UserId = friend.UserId,
                             CreatedDate = timeNow

@@ -59,6 +59,9 @@
     <Compile Include="Chest.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="ChestType.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Device.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -102,9 +105,6 @@
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SelectedTitle.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
     <Compile Include="Title.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>

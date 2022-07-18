@@ -28,11 +28,11 @@ namespace DataModel
             this.GiveawayKeys = new HashSet<GiveawayKey>();
             this.User_Dice_Unlock = new HashSet<User_Dice_Unlock>();
             this.DiceSkins = new HashSet<DiceSkin>();
-            this.Chests = new HashSet<Chest>();
             this.User_Ingredient_Unlock = new HashSet<User_Ingredient_Unlock>();
             this.IngredientSkins = new HashSet<IngredientSkin>();
-            this.SelectedTitles = new HashSet<SelectedTitle>();
             this.Titles = new HashSet<Title>();
+            this.Titles1 = new HashSet<Title>();
+            this.Chests = new HashSet<Chest>();
         }
     
         public int UserId { get; set; }
@@ -52,6 +52,12 @@ namespace DataModel
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public int OnlineWins { get; set; }
         public int Calories { get; set; }
+        public int SelectedMeat { get; set; }
+        public int SelectedVeggie { get; set; }
+        public int SelectedFruit { get; set; }
+        public int SelectedFourthIngredient { get; set; }
+        public int SelectedDie { get; set; }
+        public int SelectedDie2 { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GameAnalytic> GameAnalytics { get; set; }
@@ -76,14 +82,14 @@ namespace DataModel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DiceSkin> DiceSkins { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Chest> Chests { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User_Ingredient_Unlock> User_Ingredient_Unlock { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IngredientSkin> IngredientSkins { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SelectedTitle> SelectedTitles { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Title> Titles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Title> Titles1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Chest> Chests { get; set; }
     }
 }

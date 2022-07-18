@@ -24,5 +24,7 @@ namespace DataModel
         public int Cooked { get; set; }
         public int Stars { get; set; }
         public Nullable<System.DateTime> LastLogin { get; set; }
+        public int UserId { get; set; }
+        public int Calories { get; set; }
     }
 }

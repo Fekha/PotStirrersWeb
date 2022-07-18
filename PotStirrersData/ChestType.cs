@@ -12,22 +12,18 @@ namespace DataModel
     using System;
     using System.Collections.Generic;
     
-    public partial class Title
+    public partial class ChestType
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Title()
+        public ChestType()
         {
-            this.Players = new HashSet<Player>();
-            this.Players1 = new HashSet<Player>();
+            this.Chests = new HashSet<Chest>();
         }
     
-        public int TitleId { get; set; }
-        public string TitleName { get; set; }
-        public string EarnDescription { get; set; }
+        public int ChestTypeId { get; set; }
+        public string ChestTypeName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Player> Players { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Player> Players1 { get; set; }
+        public virtual ICollection<Chest> Chests { get; set; }
     }
 }

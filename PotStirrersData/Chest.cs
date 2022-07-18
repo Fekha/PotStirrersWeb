@@ -16,9 +16,12 @@ namespace DataModel
     {
         public int ChestId { get; set; }
         public int UserId { get; set; }
-        public Nullable<int> ChestSize { get; set; }
+        public int ChestSize { get; set; }
         public bool IsOpened { get; set; }
+        public int ChestTypeId { get; set; }
+        public Nullable<System.DateTime> FinishUnlock { get; set; }
     
+        public virtual ChestType ChestType { get; set; }
         public virtual Player Player { get; set; }
     }
 }

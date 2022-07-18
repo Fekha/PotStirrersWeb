@@ -19,8 +19,17 @@ warning 6002: The table/view 'PotStirreresDB.dbo.AppVersion' does not have a pri
           </Key>
           <Property Name="ChestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
-          <Property Name="ChestSize" Type="int" />
+          <Property Name="ChestSize" Type="int" Nullable="false" />
           <Property Name="IsOpened" Type="bit" Nullable="false" />
+          <Property Name="ChestTypeId" Type="int" Nullable="false" />
+          <Property Name="FinishUnlock" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ChestType">
+          <Key>
+            <PropertyRef Name="ChestTypeId" />
+          </Key>
+          <Property Name="ChestTypeId" Type="int" Nullable="false" />
+          <Property Name="ChestTypeName" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Device">
           <Key>
@@ -114,6 +123,12 @@ warning 6002: The table/view 'PotStirreresDB.dbo.AppVersion' does not have a pri
           <Property Name="Cooked" Type="int" Nullable="false" />
           <Property Name="LocalWins" Type="int" Nullable="false" />
           <Property Name="Wins" Type="int" Nullable="false" />
+          <Property Name="SelectedMeat" Type="int" Nullable="false" />
+          <Property Name="SelectedVeggie" Type="int" Nullable="false" />
+          <Property Name="SelectedFruit" Type="int" Nullable="false" />
+          <Property Name="SelectedFourthIngredient" Type="int" Nullable="false" />
+          <Property Name="SelectedDie" Type="int" Nullable="false" />
+          <Property Name="SelectedDie2" Type="int" Nullable="false" />
           <Property Name="WineMenu" Type="bit" Nullable="false" />
           <Property Name="UseD8s" Type="bit" Nullable="false" />
           <Property Name="DisableDoubles" Type="bit" Nullable="false" />
@@ -186,11 +201,14 @@ warning 6002: The table/view 'PotStirreresDB.dbo.AppVersion' does not have a pri
 warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="PlayerProfile">
           <Key>
+            <PropertyRef Name="UserId" />
             <PropertyRef Name="Username" />
             <PropertyRef Name="Level" />
             <PropertyRef Name="Cooked" />
             <PropertyRef Name="Stars" />
+            <PropertyRef Name="Calories" />
           </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="Username" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="DailyWins" Type="int" />
           <Property Name="WeeklyWins" Type="int" />
@@ -200,8 +218,21 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="Cooked" Type="int" Nullable="false" />
           <Property Name="Stars" Type="int" Nullable="false" />
+          <Property Name="Calories" Type="int" Nullable="false" />
           <Property Name="LastLogin" Type="datetime" />
         </EntityType>
+        <Association Name="FK_Chest_ChestType">
+          <End Role="ChestType" Type="Self.ChestType" Multiplicity="1" />
+          <End Role="Chest" Type="Self.Chest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChestType">
+              <PropertyRef Name="ChestTypeId" />
+            </Principal>
+            <Dependent Role="Chest">
+              <PropertyRef Name="ChestTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Chest_Player">
           <End Role="Player" Type="Self.Player" Multiplicity="1" />
           <End Role="Chest" Type="Self.Chest" Multiplicity="*" />
@@ -382,6 +413,18 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SelectedTitle_Title">
+          <End Role="Title" Type="Self.Title" Multiplicity="1" />
+          <End Role="SelectedTitle" Type="Self.SelectedTitle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Title">
+              <PropertyRef Name="TitleId" />
+            </Principal>
+            <Dependent Role="SelectedTitle">
+              <PropertyRef Name="TitleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Dice_Unlock_DiceSkin">
           <End Role="DiceSkin" Type="Self.DiceSkin" Multiplicity="1" />
           <End Role="User_Dice_Unlock" Type="Self.User_Dice_Unlock" Multiplicity="*" />
@@ -456,6 +499,7 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
         </Association>
         <EntityContainer Name="PotStirreresDBModelStoreContainer">
           <EntitySet Name="Chest" EntityType="Self.Chest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ChestType" EntityType="Self.ChestType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Device" EntityType="Self.Device" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DiceSkin" EntityType="Self.DiceSkin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Friends" EntityType="Self.Friends" Schema="dbo" store:Type="Tables" />
@@ -479,6 +523,7 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           </EntitySet>
           <EntitySet Name="PlayerProfile" EntityType="Self.PlayerProfile" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+    [PlayerProfile].[UserId] AS [UserId], 
     [PlayerProfile].[Username] AS [Username], 
     [PlayerProfile].[DailyWins] AS [DailyWins], 
     [PlayerProfile].[WeeklyWins] AS [WeeklyWins], 
@@ -488,9 +533,14 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
     [PlayerProfile].[CreatedDate] AS [CreatedDate], 
     [PlayerProfile].[Cooked] AS [Cooked], 
     [PlayerProfile].[Stars] AS [Stars], 
+    [PlayerProfile].[Calories] AS [Calories], 
     [PlayerProfile].[LastLogin] AS [LastLogin]
     FROM [dbo].[PlayerProfile] AS [PlayerProfile]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_Chest_ChestType" Association="Self.FK_Chest_ChestType">
+            <End Role="ChestType" EntitySet="ChestType" />
+            <End Role="Chest" EntitySet="Chest" />
+          </AssociationSet>
           <AssociationSet Name="FK_Chest_Player" Association="Self.FK_Chest_Player">
             <End Role="Player" EntitySet="Player" />
             <End Role="Chest" EntitySet="Chest" />
@@ -549,6 +599,10 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           </AssociationSet>
           <AssociationSet Name="FK_SelectedTitle_Player" Association="Self.FK_SelectedTitle_Player">
             <End Role="Player" EntitySet="Player" />
+            <End Role="SelectedTitle" EntitySet="SelectedTitle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SelectedTitle_Title" Association="Self.FK_SelectedTitle_Title">
+            <End Role="Title" EntitySet="Title" />
             <End Role="SelectedTitle" EntitySet="SelectedTitle" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Dice_Unlock_DiceSkin" Association="Self.FK_User_Dice_Unlock_DiceSkin">
@@ -634,11 +688,6 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
             <End Role="DiceSkin" EntitySet="DiceSkins" />
             <End Role="Player" EntitySet="Players" />
           </AssociationSet>
-          <EntitySet Name="Chests" EntityType="PotStirreresDBModel.Chest" />
-          <AssociationSet Name="FK_Chest_Player" Association="PotStirreresDBModel.FK_Chest_Player">
-            <End Role="Player" EntitySet="Players" />
-            <End Role="Chest" EntitySet="Chests" />
-          </AssociationSet>
           <EntitySet Name="AppVersions" EntityType="PotStirreresDBModel.AppVersion" />
           <EntitySet Name="IngredientSkins" EntityType="PotStirreresDBModel.IngredientSkin" />
           <EntitySet Name="User_Ingredient_Unlock" EntityType="PotStirreresDBModel.User_Ingredient_Unlock" />
@@ -654,15 +703,24 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
             <End Role="IngredientSkin" EntitySet="IngredientSkins" />
             <End Role="Player" EntitySet="Players" />
           </AssociationSet>
-          <EntitySet Name="SelectedTitles" EntityType="PotStirreresDBModel.SelectedTitle" />
           <EntitySet Name="Titles" EntityType="PotStirreresDBModel.Title" />
-          <AssociationSet Name="FK_SelectedTitle_Player" Association="PotStirreresDBModel.FK_SelectedTitle_Player">
+          <AssociationSet Name="SelectedTitle" Association="PotStirreresDBModel.SelectedTitle">
             <End Role="Player" EntitySet="Players" />
-            <End Role="SelectedTitle" EntitySet="SelectedTitles" />
+            <End Role="Title" EntitySet="Titles" />
           </AssociationSet>
           <AssociationSet Name="User_Title_Unlock" Association="PotStirreresDBModel.User_Title_Unlock">
             <End Role="Player" EntitySet="Players" />
             <End Role="Title" EntitySet="Titles" />
+          </AssociationSet>
+          <EntitySet Name="Chests" EntityType="PotStirreresDBModel.Chest" />
+          <EntitySet Name="ChestTypes" EntityType="PotStirreresDBModel.ChestType" />
+          <AssociationSet Name="FK_Chest_ChestType" Association="PotStirreresDBModel.FK_Chest_ChestType">
+            <End Role="ChestType" EntitySet="ChestTypes" />
+            <End Role="Chest" EntitySet="Chests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chest_Player" Association="PotStirreresDBModel.FK_Chest_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="Chest" EntitySet="Chests" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="GameAnalytic">
@@ -712,14 +770,20 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <NavigationProperty Name="GiveawayKeys" Relationship="PotStirreresDBModel.FK_GiveawayKey_Player" FromRole="Player" ToRole="GiveawayKey" />
           <NavigationProperty Name="User_Dice_Unlock" Relationship="PotStirreresDBModel.FK_User_Dice_Unlock_Player" FromRole="Player" ToRole="User_Dice_Unlock" />
           <NavigationProperty Name="DiceSkins" Relationship="PotStirreresDBModel.SelectedDice" FromRole="Player" ToRole="DiceSkin" />
-          <NavigationProperty Name="Chests" Relationship="PotStirreresDBModel.FK_Chest_Player" FromRole="Player" ToRole="Chest" />
           <NavigationProperty Name="User_Ingredient_Unlock" Relationship="PotStirreresDBModel.FK_User_Ingredient_Unlock_Player" FromRole="Player" ToRole="User_Ingredient_Unlock" />
           <NavigationProperty Name="IngredientSkins" Relationship="PotStirreresDBModel.SelectedIngredient" FromRole="Player" ToRole="IngredientSkin" />
           <Property Name="OnlineWins" Type="Int32" Nullable="false" />
           <Property Name="Calories" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="SelectedTitles" Relationship="PotStirreresDBModel.FK_SelectedTitle_Player" FromRole="Player" ToRole="SelectedTitle" />
-          <NavigationProperty Name="Titles" Relationship="PotStirreresDBModel.User_Title_Unlock" FromRole="Player" ToRole="Title" />
-        </EntityType>
+          <Property Name="SelectedMeat" Type="Int32" Nullable="false" />
+          <Property Name="SelectedVeggie" Type="Int32" Nullable="false" />
+          <Property Name="SelectedFruit" Type="Int32" Nullable="false" />
+          <Property Name="SelectedFourthIngredient" Type="Int32" Nullable="false" />
+          <Property Name="SelectedDie" Type="Int32" Nullable="false" />
+          <Property Name="SelectedDie2" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Titles" Relationship="PotStirreresDBModel.SelectedTitle" FromRole="Player" ToRole="Title" />
+          <NavigationProperty Name="Titles1" Relationship="PotStirreresDBModel.User_Title_Unlock" FromRole="Player" ToRole="Title" />
+          <NavigationProperty Name="Chests" Relationship="PotStirreresDBModel.FK_Chest_Player" FromRole="Player" ToRole="Chest" />
+          </EntityType>
         <Association Name="FK_GameAnalytics_Player">
           <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
           <End Type="PotStirreresDBModel.GameAnalytic" Role="GameAnalytic" Multiplicity="*" />
@@ -834,6 +898,8 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
             <PropertyRef Name="Level" />
             <PropertyRef Name="Cooked" />
             <PropertyRef Name="Stars" />
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="Calories" />
           </Key>
           <Property Name="Username" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="DailyWins" Type="Int32" />
@@ -845,6 +911,8 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <Property Name="Cooked" Type="Int32" Nullable="false" />
           <Property Name="Stars" Type="Int32" Nullable="false" />
           <Property Name="LastLogin" Type="DateTime" Precision="3" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Calories" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="GiveawayKey">
           <Key>
@@ -920,28 +988,6 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <End Type="PotStirreresDBModel.DiceSkin" Role="DiceSkin" Multiplicity="*" />
           <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="*" />
         </Association>
-        <EntityType Name="Chest">
-          <Key>
-            <PropertyRef Name="ChestId" />
-          </Key>
-          <Property Name="ChestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="ChestSize" Type="Int32" />
-          <Property Name="IsOpened" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_Chest_Player" FromRole="Chest" ToRole="Player" />
-        </EntityType>
-        <Association Name="FK_Chest_Player">
-          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
-          <End Type="PotStirreresDBModel.Chest" Role="Chest" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Player">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Chest">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="AppVersion">
           <Key>
             <PropertyRef Name="AppVersion1" />
@@ -998,15 +1044,6 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <End Type="PotStirreresDBModel.IngredientSkin" Role="IngredientSkin" Multiplicity="*" />
           <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="*" />
         </Association>
-        <EntityType Name="SelectedTitle">
-          <Key>
-            <PropertyRef Name="UserId" />
-            <PropertyRef Name="TitleId" />
-          </Key>
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="TitleId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_SelectedTitle_Player" FromRole="SelectedTitle" ToRole="Player" />
-        </EntityType>
         <EntityType Name="Title">
           <Key>
             <PropertyRef Name="TitleId" />
@@ -1014,23 +1051,61 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <Property Name="TitleId" Type="Int32" Nullable="false" />
           <Property Name="TitleName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
           <Property Name="EarnDescription" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Players" Relationship="PotStirreresDBModel.User_Title_Unlock" FromRole="Title" ToRole="Player" />
+          <NavigationProperty Name="Players" Relationship="PotStirreresDBModel.SelectedTitle" FromRole="Title" ToRole="Player" />
+          <NavigationProperty Name="Players1" Relationship="PotStirreresDBModel.User_Title_Unlock" FromRole="Title" ToRole="Player" />
         </EntityType>
-        <Association Name="FK_SelectedTitle_Player">
-          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
-          <End Type="PotStirreresDBModel.SelectedTitle" Role="SelectedTitle" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Player">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="SelectedTitle">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
+        <Association Name="SelectedTitle">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="*" />
+          <End Type="PotStirreresDBModel.Title" Role="Title" Multiplicity="*" />
         </Association>
         <Association Name="User_Title_Unlock">
           <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="*" />
           <End Type="PotStirreresDBModel.Title" Role="Title" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Chest">
+          <Key>
+            <PropertyRef Name="ChestId" />
+          </Key>
+          <Property Name="ChestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="ChestSize" Type="Int32" Nullable="false" />
+          <Property Name="IsOpened" Type="Boolean" Nullable="false" />
+          <Property Name="ChestTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ChestType" Relationship="PotStirreresDBModel.FK_Chest_ChestType" FromRole="Chest" ToRole="ChestType" />
+          <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_Chest_Player" FromRole="Chest" ToRole="Player" />
+          <Property Name="FinishUnlock" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ChestType">
+          <Key>
+            <PropertyRef Name="ChestTypeId" />
+          </Key>
+          <Property Name="ChestTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ChestTypeName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Chests" Relationship="PotStirreresDBModel.FK_Chest_ChestType" FromRole="ChestType" ToRole="Chest" />
+        </EntityType>
+        <Association Name="FK_Chest_ChestType">
+          <End Type="PotStirreresDBModel.ChestType" Role="ChestType" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.Chest" Role="Chest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChestType">
+              <PropertyRef Name="ChestTypeId" />
+            </Principal>
+            <Dependent Role="Chest">
+              <PropertyRef Name="ChestTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chest_Player">
+          <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="PotStirreresDBModel.Chest" Role="Chest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Chest">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -1057,6 +1132,12 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <EntitySetMapping Name="Players">
             <EntityTypeMapping TypeName="PotStirreresDBModel.Player">
               <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="SelectedDie2" ColumnName="SelectedDie2" />
+                <ScalarProperty Name="SelectedDie" ColumnName="SelectedDie" />
+                <ScalarProperty Name="SelectedFourthIngredient" ColumnName="SelectedFourthIngredient" />
+                <ScalarProperty Name="SelectedFruit" ColumnName="SelectedFruit" />
+                <ScalarProperty Name="SelectedVeggie" ColumnName="SelectedVeggie" />
+                <ScalarProperty Name="SelectedMeat" ColumnName="SelectedMeat" />
                 <ScalarProperty Name="Calories" ColumnName="Calories" />
                 <ScalarProperty Name="OnlineWins" ColumnName="OnlineWins" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
@@ -1118,6 +1199,8 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <EntitySetMapping Name="PlayerProfiles">
             <EntityTypeMapping TypeName="PotStirreresDBModel.PlayerProfile">
               <MappingFragment StoreEntitySet="PlayerProfile">
+                <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="LastLogin" ColumnName="LastLogin" />
                 <ScalarProperty Name="Stars" ColumnName="Stars" />
                 <ScalarProperty Name="Cooked" ColumnName="Cooked" />
@@ -1170,16 +1253,6 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
               <ScalarProperty Name="DiceSkinId" ColumnName="DiceSkinId" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="Chests">
-            <EntityTypeMapping TypeName="PotStirreresDBModel.Chest">
-              <MappingFragment StoreEntitySet="Chest">
-                <ScalarProperty Name="IsOpened" ColumnName="IsOpened" />
-                <ScalarProperty Name="ChestSize" ColumnName="ChestSize" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="ChestId" ColumnName="ChestId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="AppVersions">
             <EntityTypeMapping TypeName="PotStirreresDBModel.AppVersion">
               <MappingFragment StoreEntitySet="AppVersion">
@@ -1214,14 +1287,6 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
               <ScalarProperty Name="IngredientSkinId" ColumnName="IngredientSkinId" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="SelectedTitles">
-            <EntityTypeMapping TypeName="PotStirreresDBModel.SelectedTitle">
-              <MappingFragment StoreEntitySet="SelectedTitle">
-                <ScalarProperty Name="TitleId" ColumnName="TitleId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Titles">
             <EntityTypeMapping TypeName="PotStirreresDBModel.Title">
               <MappingFragment StoreEntitySet="Title">
@@ -1231,6 +1296,14 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="SelectedTitle" TypeName="PotStirreresDBModel.SelectedTitle" StoreEntitySet="SelectedTitle">
+            <EndProperty Name="Title">
+              <ScalarProperty Name="TitleId" ColumnName="TitleId" />
+            </EndProperty>
+            <EndProperty Name="Player">
+              <ScalarProperty Name="UserId" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
           <AssociationSetMapping Name="User_Title_Unlock" TypeName="PotStirreresDBModel.User_Title_Unlock" StoreEntitySet="User_Title_Unlock">
             <EndProperty Name="Title">
               <ScalarProperty Name="TitleId" ColumnName="TitleId" />
@@ -1239,6 +1312,26 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
               <ScalarProperty Name="UserId" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Chests">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.Chest">
+              <MappingFragment StoreEntitySet="Chest">
+                <ScalarProperty Name="FinishUnlock" ColumnName="FinishUnlock" />
+                <ScalarProperty Name="ChestTypeId" ColumnName="ChestTypeId" />
+                <ScalarProperty Name="IsOpened" ColumnName="IsOpened" />
+                <ScalarProperty Name="ChestSize" ColumnName="ChestSize" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ChestId" ColumnName="ChestId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChestTypes">
+            <EntityTypeMapping TypeName="PotStirreresDBModel.ChestType">
+              <MappingFragment StoreEntitySet="ChestType">
+                <ScalarProperty Name="ChestTypeName" ColumnName="ChestTypeName" />
+                <ScalarProperty Name="ChestTypeId" ColumnName="ChestTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

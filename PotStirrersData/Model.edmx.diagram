@@ -25,18 +25,19 @@
         <AssociationConnector Association="PotStirreresDBModel.FK_User_Dice_Unlock_DiceSkin" />
         <AssociationConnector Association="PotStirreresDBModel.FK_User_Dice_Unlock_Player" />
         <AssociationConnector Association="PotStirreresDBModel.SelectedDice" />
-        <EntityTypeShape EntityType="PotStirreresDBModel.Chest" Width="1.5" PointX="1.375" PointY="13.125" />
-        <AssociationConnector Association="PotStirreresDBModel.FK_Chest_Player" />
         <EntityTypeShape EntityType="PotStirreresDBModel.AppVersion" Width="1.5" PointX="0.75" PointY="9.75" />
         <EntityTypeShape EntityType="PotStirreresDBModel.IngredientSkin" Width="1.5" PointX="8.25" PointY="12.25" />
         <EntityTypeShape EntityType="PotStirreresDBModel.User_Ingredient_Unlock" Width="1.5" PointX="10.125" PointY="7.5" />
         <AssociationConnector Association="PotStirreresDBModel.FK_User_Ingredient_Unlock_IngredientSkin" />
         <AssociationConnector Association="PotStirreresDBModel.FK_User_Ingredient_Unlock_Player" />
         <AssociationConnector Association="PotStirreresDBModel.SelectedIngredient" />
-        <EntityTypeShape EntityType="PotStirreresDBModel.SelectedTitle" Width="1.5" PointX="6" PointY="0.75" />
-        <EntityTypeShape EntityType="PotStirreresDBModel.Title" Width="1.5" PointX="6" PointY="21" />
-        <AssociationConnector Association="PotStirreresDBModel.FK_SelectedTitle_Player" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.Title" Width="1.5" PointX="6" PointY="21.875" />
+        <AssociationConnector Association="PotStirreresDBModel.SelectedTitle" />
         <AssociationConnector Association="PotStirreresDBModel.User_Title_Unlock" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.Chest" Width="1.5" PointX="11" PointY="10.75" />
+        <EntityTypeShape EntityType="PotStirreresDBModel.ChestType" Width="1.5" PointX="8.75" PointY="15.125" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_Chest_ChestType" />
+        <AssociationConnector Association="PotStirreresDBModel.FK_Chest_Player" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

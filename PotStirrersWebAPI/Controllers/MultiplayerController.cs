@@ -14,7 +14,8 @@ namespace PotStirrersWebAPI.Controllers
     {
         private static Queue<int> UsersSearching = new Queue<int>();
         private static List<GameState> ActiveGames = new List<GameState>();
-        private static List<PlayerPing> Pings = new List<PlayerPing>();
+        public static List<PlayerPing> Pings = new List<PlayerPing>();
+        public static Random random = new Random();
 
         private static TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
@@ -326,13 +327,20 @@ namespace PotStirrersWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/Multiplayer/CPUGameWon")]
-        public IHttpActionResult CPUGameWon(int UserId)
+        [Route("api/Multiplayer/CPUGameFinished")]
+        public IHttpActionResult CPUGameFinished(int UserId, int Cooked)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 var player1 = context.Players.FirstOrDefault(x => x.UserId == UserId);
-                player1.Stars += 50;
+                if (Cooked == 4)
+                {
+                    player1.Wins++;
+                    player1.Stars += 50;
+                }
+                player1.Cooked += Cooked;
+                player1.Xp += Cooked*50;
+                context.SaveChanges();
                 return Json(true);
             }
         }
@@ -401,7 +409,8 @@ namespace PotStirrersWebAPI.Controllers
                             context.Chests.Add(new Chest()
                             {
                                 ChestSize = chestEarned,
-                                UserId = winner.UserId
+                                UserId = winner.UserId,
+                                ChestTypeId = random.Next(1, 3)
                             });
                         }
                         if (player1Won)
@@ -429,6 +438,14 @@ namespace PotStirrersWebAPI.Controllers
 
                     player1.Cooked += Player1Cooked;
                     player2.Cooked += Player2Cooked;
+                    if (player1.UserId == 5 && !player1Won && !player1.Titles1.Any(x=>x.TitleId == 11))
+                    {
+                        player2.Titles1.Add(context.Titles.FirstOrDefault(x => x.TitleId == 11));
+                    }
+                    else if (player2.UserId == 5 && player1Won && !player2.Titles1.Any(x => x.TitleId == 11))
+                    {
+                        player1.Titles1.Add(context.Titles.FirstOrDefault(x => x.TitleId == 11));
+                    }
                     context.SaveChanges();
                 }
                 var gameLastedText = $"{(TotalTurns < 20?"!" : " and a Dice Pack!")} \n \n The match lasted {TotalTurns} turns! {(TotalTurns < 20 ? "Since the round didn't last 20 turns no rewards were earned" : "")}";
@@ -443,9 +460,8 @@ namespace PotStirrersWebAPI.Controllers
             }
         }
 
-        private int getChest()
+        public static int getChest()
         {
-            Random random = new Random();
             var rarity = random.Next(0, 10);
             if (rarity == 9)
             {
