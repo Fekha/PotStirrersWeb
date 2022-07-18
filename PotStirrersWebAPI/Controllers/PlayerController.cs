@@ -222,7 +222,7 @@ namespace PotStirrersWebAPI.Controllers
                     {
                         daysLoggedIn++;
                     }
-                    int caloriesGained = 75 + (Math.Min(daysLoggedIn, 7) * 25);
+                    int caloriesGained = 100 + (Math.Min(daysLoggedIn, 7) * 15);
                     player.Calories += caloriesGained;
                     var chestEarned = MultiplayerController.getChest();
                     context.Chests.Add(new Chest()

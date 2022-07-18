@@ -26,7 +26,6 @@ namespace DataModel
         }
     
         public virtual DbSet<GameAnalytic> GameAnalytics { get; set; }
-        public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<LoggedIn> LoggedIns { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
@@ -40,5 +39,6 @@ namespace DataModel
         public virtual DbSet<Title> Titles { get; set; }
         public virtual DbSet<Chest> Chests { get; set; }
         public virtual DbSet<ChestType> ChestTypes { get; set; }
+        public virtual DbSet<Player> Players { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace DataModel
         public bool WineMenu { get; set; }
         public Nullable<int> TotalTurns { get; set; }
         public bool Quit { get; set; }
+        public int Wager { get; set; }
     
         public virtual Player Player { get; set; }
         public virtual Player Player1 { get; set; }

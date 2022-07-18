@@ -12,14 +12,14 @@ namespace PotStirrersWebAPI.Controllers
     //hello
     public class MultiplayerController : ApiController
     {
-        private static Queue<int> UsersSearching = new Queue<int>();
+        private static Queue<MatchmakingUser> UsersSearching = new Queue<MatchmakingUser>();
         private static List<GameState> ActiveGames = new List<GameState>();
         public static List<PlayerPing> Pings = new List<PlayerPing>();
         public static Random random = new Random();
 
         private static TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
-        private int CreateGame(int Player1, int Player2) {
+        private int CreateGame(int Player1, int Player2, int Wager) {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
@@ -28,6 +28,7 @@ namespace PotStirrersWebAPI.Controllers
                     GameStartTime = timeNow,
                     Player1Id = Player1,
                     Player2Id = Player2,
+                    Wager = Wager
                 };
                 context.GameAnalytics.Add(newGame);
                 context.SaveChanges();
@@ -44,11 +45,11 @@ namespace PotStirrersWebAPI.Controllers
                 using (PotStirreresDBEntities context = new PotStirreresDBEntities())
                 {
                     var playerX = context.Players.FirstOrDefault(x => x.UserId == Player1);
-                    playerX.Stars -= 150;
+                    playerX.Calories -= 100;
                     context.SaveChanges();
                 }
             }
-            return Json(CreateGame(Player1, Player2));
+            return Json(CreateGame(Player1, Player2, 100));
         }
 
         [HttpGet]
@@ -214,20 +215,10 @@ namespace PotStirrersWebAPI.Controllers
             }
             return Json(game);
         }
-        
-        [HttpGet]
-        [Route("api/Multiplayer/EndGame")]
-        public IHttpActionResult EndGame(int GameId)
-        {
-            var game = ActiveGames.FirstOrDefault(x => x.GameId == GameId);
-            if (game != null)
-                ActiveGames.Remove(game);
-            return Json(true);
-        }
 
         [HttpGet]
         [Route("api/Multiplayer/LookforGame")]
-        public IHttpActionResult LookforGame(int UserId)
+        public IHttpActionResult LookforGame(int UserId, int wager)
         {
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             var timeForward = timeNow.AddMinutes(1);
@@ -237,7 +228,7 @@ namespace PotStirrersWebAPI.Controllers
             if (Pings.Any(x => x.PlayerLastPing < timeBackward))
             {
                 var prunableQue = Pings.Where(x => x.PlayerLastPing < timeBackward).Select(x => x.UserId).ToList();
-                UsersSearching = new Queue<int>(UsersSearching.Where(x => !prunableQue.Contains(x)));
+                UsersSearching = new Queue<MatchmakingUser>(UsersSearching.Where(x => !prunableQue.Contains(x.UserId)));
             }
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
@@ -256,13 +247,14 @@ namespace PotStirrersWebAPI.Controllers
                 }
                 else
                 {
-                    if (UsersSearching.Count > 0 && !UsersSearching.Contains(UserId))
+                    if (UsersSearching.Count > 0 && !UsersSearching.Select(x=>x.UserId).Contains(UserId))
                     {
-                        var queuedId = UsersSearching.Dequeue();
-                        var playerX = context.Players.FirstOrDefault(x => x.UserId == queuedId);
+                        var queuedUser = UsersSearching.Dequeue();
+                        var playerX = context.Players.FirstOrDefault(x => x.UserId == queuedUser.UserId);
                         var playerY = context.Players.FirstOrDefault(x => x.UserId == UserId);
-                        playerX.Stars -= 150;
-                        playerY.Stars -= 150;
+                        var gameCost = Math.Min(wager,queuedUser.Wager);
+                        playerX.Calories -= gameCost;
+                        playerY.Calories -= gameCost;
                         context.SaveChanges();
                         PlayerDTO p1;
                         PlayerDTO p2;
@@ -276,7 +268,7 @@ namespace PotStirrersWebAPI.Controllers
                             p1 = new PlayerDTO(playerY);
                             p2 = new PlayerDTO(playerX);
                         }
-                        var newGameId = CreateGame(p1.UserId, p2.UserId);
+                        var newGameId = CreateGame(p1.UserId, p2.UserId, gameCost);
                         Random rand = new Random();
                         var turn = rand.Next(0, 2) == 0;
                         ActiveGames.Add(new GameState()
@@ -294,9 +286,9 @@ namespace PotStirrersWebAPI.Controllers
                         });
                         return Json(newGameId);
                     }
-                    else if(!UsersSearching.Contains(UserId))
+                    else if(!UsersSearching.Select(x => x.UserId).Contains(UserId))
                     {
-                        UsersSearching.Enqueue(UserId);
+                        UsersSearching.Enqueue(new MatchmakingUser() { UserId = UserId, Wager = wager });
                     }
                 }
                 return Json(0);
@@ -321,8 +313,8 @@ namespace PotStirrersWebAPI.Controllers
         [Route("api/Multiplayer/StopLookingforGame")]
         public IHttpActionResult StopLookingforGame(int UserId)
         {
-            if (UsersSearching.Contains(UserId))
-                UsersSearching = new Queue<int>(UsersSearching.Where(x => x != UserId));
+            if (UsersSearching.Select(x=>x.UserId).Contains(UserId))
+                UsersSearching = new Queue<MatchmakingUser>(UsersSearching.Where(x => x.UserId != UserId));
             return Json(true);
         }
 
@@ -336,10 +328,10 @@ namespace PotStirrersWebAPI.Controllers
                 if (Cooked == 4)
                 {
                     player1.Wins++;
-                    player1.Stars += 50;
+                    player1.Calories += 50;
                 }
                 player1.Cooked += Cooked;
-                player1.Xp += Cooked*50;
+                player1.Xp += Cooked * 50;
                 context.SaveChanges();
                 return Json(true);
             }
@@ -415,29 +407,33 @@ namespace PotStirrersWebAPI.Controllers
                         }
                         if (player1Won)
                         {
-                            player1.Stars += 300;
+                            player1.Calories += oldGame.Wager*2;
+                            player1.SeasonScore += oldGame.Wager * 2;
                         }
                         else
                         {
-                            player2.Stars += 300;
+                            player2.Calories += oldGame.Wager*2;
+                            player2.SeasonScore += oldGame.Wager * 2;
                         }
                     }
                     else
                     {
                         if (player1Won)
                         {
-                            player1.Stars += 150;
+                            player1.Calories += oldGame.Wager;
                         }
                         else
                         {
-                            player2.Stars += 150;
+                            player2.Calories += oldGame.Wager;
                         }
                     }
+
                     player1.Xp += Player1Cooked * 50;
                     player2.Xp += Player2Cooked * 50;
 
                     player1.Cooked += Player1Cooked;
                     player2.Cooked += Player2Cooked;
+
                     if (player1.UserId == 5 && !player1Won && !player1.Titles1.Any(x=>x.TitleId == 11))
                     {
                         player2.Titles1.Add(context.Titles.FirstOrDefault(x => x.TitleId == 11));
@@ -448,14 +444,14 @@ namespace PotStirrersWebAPI.Controllers
                     }
                     context.SaveChanges();
                 }
-                var gameLastedText = $"{(TotalTurns < 20?"!" : " and a Dice Pack!")} \n \n The match lasted {TotalTurns} turns! {(TotalTurns < 20 ? "Since the round didn't last 20 turns no rewards were earned" : "")}";
+                var gameLastedText = $"{(TotalTurns < 20?"!" : " and a Skin Pack!")} \n \n The match lasted {TotalTurns} turns! {(TotalTurns < 20 ? "Since the round didn't last 20 turns, entry wagers were refunded and no rewards were earned" : "")}";
                 var message = "";
                 if (RageQuit == 0) {
                     message += $" {winner.Username} Won! \n \n They";
                 } else {
                     message += $" {loser.Username} Quit! \n \n {winner.Username}";
                 }
-                message += $" earned 300 Calories{gameLastedText} \n \n Each Player earned 50 XP per cooked ingredient";
+                message += $" earned {oldGame.Wager*2} Calories{gameLastedText} \n \n Each Player earned 50 XP per cooked ingredient";
                 return Json(message);
             }
         }
@@ -475,6 +471,12 @@ namespace PotStirrersWebAPI.Controllers
             {
                 return 1;
             }
+        }
+
+        public class MatchmakingUser
+        {
+            public int UserId { get; set; }
+            public int Wager { get; set; }
         }
     }
 }

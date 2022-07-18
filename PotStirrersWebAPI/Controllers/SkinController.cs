@@ -41,6 +41,8 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
+                var player = context.Players.FirstOrDefault(x=>x.UserId == UserId);
+                int cost = 9999999;
                 if (!isDie)
                 {
                     var toDeleteFrom = context.User_Ingredient_Unlock.FirstOrDefault(x => x.UserId == UserId && x.IngredientSkinId == ToDeleteSkinId);
@@ -52,6 +54,7 @@ namespace PotStirrersWebAPI.Controllers
                     {
                         toAddTo.SkinQty += amountToCraft;
                         toDeleteFrom.SkinQty -= amountToDestroy;
+                        cost = (amountToCraft + amountToDestroy) * (isDie ? 50 : 100);
                     }
                 }
                 else
@@ -65,9 +68,14 @@ namespace PotStirrersWebAPI.Controllers
                     {
                         toAddTo.DiceFaceUnlockedQty += amountToCraft;
                         toDeleteFrom.DiceFaceUnlockedQty -= amountToDestroy;
+                        cost = (amountToCraft + amountToDestroy) * (isDie ? 50 : 100);
                     }
                 }
-                context.SaveChanges();
+                if (player.Calories >= cost)
+                {
+                    player.Calories -= cost;
+                    context.SaveChanges();
+                }
                 return Json(true);
             }
         }
@@ -437,7 +445,7 @@ namespace PotStirrersWebAPI.Controllers
                     }
                 });
                 context.SaveChanges();
-                return Json(returnText);
+                return Json(returnText.Length > 4 ? returnText.Substring(0,returnText.Length-4):returnText);
             }
         }
 
@@ -557,6 +565,10 @@ namespace PotStirrersWebAPI.Controllers
                         if (player.UserId == 14 || player.UserId == 33)
                             return x;
                         break;
+                    }
+                case 22:
+                    {
+                        return x;
                     }
                 default:
                     break;

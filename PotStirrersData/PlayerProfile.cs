@@ -26,5 +26,6 @@ namespace DataModel
         public Nullable<System.DateTime> LastLogin { get; set; }
         public int UserId { get; set; }
         public int Calories { get; set; }
+        public int SeasonScore { get; set; }
     }
 }
