@@ -444,14 +444,19 @@ namespace PotStirrersWebAPI.Controllers
                     }
                     context.SaveChanges();
                 }
-                var gameLastedText = $"{(TotalTurns < 20?"!" : " and a Skin Pack!")} \n \n The match lasted {TotalTurns} turns! {(TotalTurns < 20 ? "Since the round didn't last 20 turns, entry wagers were refunded and no rewards were earned" : "")}";
+                var gameLastedText = $"{(TotalTurns < 20?"!" : " and a Skin Pack!")} \n \n The match lasted {TotalTurns} turns! {(TotalTurns < 20 ? "Since the round didn't last 20 turns, no rewards were earned" : "")}";
                 var message = "";
                 if (RageQuit == 0) {
-                    message += $" {winner.Username} Won! \n \n They";
+                    message += $" {winner.Username} Won! \n \n ";
                 } else {
-                    message += $" {loser.Username} Quit! \n \n {winner.Username}";
+                    message += $" {loser.Username} Quit! \n \n ";
                 }
-                message += $" earned {oldGame.Wager*2} Calories{gameLastedText} \n \n Each Player earned 50 XP per cooked ingredient";
+                if (TotalTurns < 20) {
+                    message += $"Entry fees of {oldGame.Wager} Calories were returned"; 
+                } else {
+                    message += $"{winner.Username} earned {oldGame.Wager * 2} Calories";
+                }
+                message += $"{gameLastedText} \n \n Each Player earned 50 XP per cooked ingredient";
                 return Json(message);
             }
         }

@@ -144,8 +144,12 @@ namespace PotStirrersWebAPI.Controllers
             {
                 var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
                 var toUnlock = dbPlayer.User_Ingredient_Unlock.FirstOrDefault(x => x.IngredientSkinId == SkinId);
-                toUnlock.SkinQty -= 4;
-                toUnlock.SkinOwned = true;
+                var cost = (toUnlock.IngredientSkin.Rarity == 3 ? 1500 : toUnlock.IngredientSkin.Rarity == 2 ? 1000 : 500);
+                if (dbPlayer.Calories >= cost) {
+                    toUnlock.SkinQty -= 4;
+                    toUnlock.SkinOwned = true;
+                    dbPlayer.Calories -= cost;
+                }
                 context.SaveChanges();
                 return Json(true);
             }
@@ -158,8 +162,13 @@ namespace PotStirrersWebAPI.Controllers
             {
                 var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
                 var toUnlock = dbPlayer.User_Dice_Unlock.FirstOrDefault(x => x.DiceSkinId == SkinId);
-                toUnlock.DiceFaceUnlockedQty -= 10;
-                toUnlock.DieOwned = true;
+                var cost = (toUnlock.DiceSkin.Rarity == 3 ? 1500 : toUnlock.DiceSkin.Rarity == 2 ? 1000 : 500);
+                if (dbPlayer.Calories >= cost)
+                {
+                    toUnlock.DiceFaceUnlockedQty -= 10;
+                    toUnlock.DieOwned = true;
+                    dbPlayer.Calories -= cost;
+                }
                 context.SaveChanges();
                 return Json(true);
             }

@@ -20,8 +20,13 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
+                PlayerDTO playerDto = null;
                 var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
-                return context.Players.Where(x => x.Username == username).ToList().Select(x => new PlayerDTO(x, timeNow)).FirstOrDefault();
+                Player player = context.Players.FirstOrDefault(x => x.Username == username);
+                if (player != null) {
+                    playerDto = new PlayerDTO(player, timeNow);
+                }
+                return playerDto;
             }
         }
 
@@ -142,19 +147,21 @@ namespace PotStirrersWebAPI.Controllers
        
         [HttpGet]
         [Route("api/player/UpdateSettings")]
-        public IHttpActionResult UpdateSettings(int UserId, bool WineMenu, bool UseD8s, bool DisableDoubles, bool PlayAsPurple)
+        public IHttpActionResult UpdateSettings(int UserId, float GameVolume, float TurnVolume, bool? WineMenu = null, bool? PlayAsPurple = null)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 var dbPlayer = context.Players.FirstOrDefault(x => x.UserId == UserId);
                 if (dbPlayer != null) {
-                    dbPlayer.UseD8s = UseD8s;
-                    dbPlayer.DisableDoubles = DisableDoubles;
-                    dbPlayer.WineMenu = WineMenu;
-                    dbPlayer.PlayAsPurple = PlayAsPurple;
+                    dbPlayer.GameVolume = GameVolume;
+                    dbPlayer.TurnVolume = TurnVolume;
+                    if (WineMenu != null)
+                        dbPlayer.WineMenu = (bool)WineMenu;
+                    if(PlayAsPurple != null)
+                        dbPlayer.PlayAsPurple = (bool)PlayAsPurple;
                 }
                 context.SaveChanges();
-                return Json(dbPlayer);
+                return Json(true);
             }
         }
 

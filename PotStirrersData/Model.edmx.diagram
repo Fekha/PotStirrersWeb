@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="92a5c25699394dba9eebad7e573ac74d" Name="Diagram1" ZoomLevel="85">
+      <Diagram DiagramId="92a5c25699394dba9eebad7e573ac74d" Name="Diagram1" ZoomLevel="81">
         <EntityTypeShape EntityType="PotStirreresDBModel.GameAnalytic" Width="1.5" PointX="5.875" PointY="12.375" />
         <EntityTypeShape EntityType="PotStirreresDBModel.Device" Width="1.5" PointX="6.375" PointY="9.625" />
         <EntityTypeShape EntityType="PotStirreresDBModel.LoggedIn" Width="1.5" PointX="6.375" PointY="5.625" />

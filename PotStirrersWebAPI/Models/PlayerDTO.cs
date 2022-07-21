@@ -27,6 +27,8 @@ public class PlayerDTO
         Level = x.Level;
         LocalWins = x.LocalWins;
         OnlineWins = x.OnlineWins;
+        MusicVolume = (float)x.GameVolume;
+        TurnVolume = (float)x.TurnVolume;
     }
     public int UserId { get; set; }
     public int Wins { get; set; }
@@ -48,4 +50,6 @@ public class PlayerDTO
     public bool UseD8s { get; set; }
     public bool DisableDoubles { get; set; }
     public bool PlayAsPurple { get; set; }
+    public float MusicVolume { get; set; }
+    public float TurnVolume { get; set; }
 }

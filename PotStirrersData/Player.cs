@@ -53,6 +53,8 @@ namespace DataModel
         public int OnlineWins { get; set; }
         public int Calories { get; set; }
         public int SeasonScore { get; set; }
+        public double GameVolume { get; set; }
+        public double TurnVolume { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Chest> Chests { get; set; }
