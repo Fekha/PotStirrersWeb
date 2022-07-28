@@ -45,28 +45,10 @@ namespace PotStirrersWebAPI.Controllers
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
                 var playerX = context.Players.FirstOrDefault(x => x.UserId == Player1);
-                playerX.Calories -= 100;
+                var wager = (Player2 == 42 ? 100 : 0);
+                playerX.Calories -= wager;
                 context.SaveChanges();
-                var playerY = context.Players.FirstOrDefault(x => x.UserId == Player2);
-                PlayerDTO p1 = new PlayerDTO(playerX);
-                PlayerDTO p2 = new PlayerDTO(playerY);
-                var newGameId = CreateGame(p1.UserId, p2.UserId, (FakeOnlineGame ? 100 : 0), false, true);
-                Random rand = new Random();
-                var turn = rand.Next(0, 2) == 0;
-                ActiveGames.Add(new GameState()
-                {
-                    GameId = newGameId,
-                    Player1 = p1,
-                    Player2 = p2,
-                    CreatedDate = timeNow,
-                    StartedPlaying = false,
-                    IsFriendGame = false,
-                    ShouldTrash = null,
-                    IsPlayer1Turn = turn,
-                    GameTurns = new Queue<GameTurn>(),
-                    GameSelections = new Queue<GameSelections>(),
-                    GameRolls = new Queue<GameRoll>()
-                });
+                var newGameId = CreateGame(Player1, Player2, wager, false, true);
                 return Json(newGameId);
             }
         }
@@ -90,13 +72,13 @@ namespace PotStirrersWebAPI.Controllers
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
             var timePast = timeNow.AddMinutes(-1);
             UpdatePing(UserId);
-            var game = ActiveGames.FirstOrDefault(x => (x.Player1.UserId == UserId || x.Player2.UserId == UserId) && x.GameId == GameId);
-            if (game == null)
-            {
-                return Json(OtherUserId);
-            }
             if (OtherUserId != 41 && OtherUserId != 42)
             {
+                var game = ActiveGames.FirstOrDefault(x => (x.Player1.UserId == UserId || x.Player2.UserId == UserId) && x.GameId == GameId);
+                if (game == null)
+                {
+                    return Json(OtherUserId);
+                }
                 if (Pings.FirstOrDefault(x => x.UserId == game.Player1.UserId).PlayerLastPing < timePast)
                 {
                     ActiveGames.Remove(game);
@@ -324,20 +306,10 @@ namespace PotStirrersWebAPI.Controllers
         public IHttpActionResult CheckForFriendGameInvite(int UserId)
         {
             UpdatePing(UserId);
-            var game = ActiveGames.FirstOrDefault(x => (x.Player1.UserId == UserId || x.Player2.UserId == UserId));
+            var game = ActiveGames.FirstOrDefault(x => (x.Player1.UserId == UserId || x.Player2.UserId == UserId) && x.IsFriendGame && !x.StartedPlaying);
             if (game != null)
             {
-                if (game.IsFriendGame)
-                {
-                    if (game.StartedPlaying == false)
-                    {
-                        return Json(game.GameId);
-                    }
-                }
-                else
-                {
-                    ActiveGames.Remove(game);
-                }
+                return Json(game.GameId);
             }
             return Json(0);
         }
