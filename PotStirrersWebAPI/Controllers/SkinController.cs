@@ -54,7 +54,7 @@ namespace PotStirrersWebAPI.Controllers
                     {
                         toAddTo.SkinQty += amountToCraft;
                         toDeleteFrom.SkinQty -= amountToDestroy;
-                        cost = (amountToCraft + amountToDestroy) * (isDie ? 50 : 100);
+                        cost = (toAddTo.IngredientSkin.Rarity == 3 ? 450 : toAddTo.IngredientSkin.Rarity == 2 ? 150 : 50) * (isDie ? 1 : 2);
                     }
                 }
                 else
@@ -68,7 +68,7 @@ namespace PotStirrersWebAPI.Controllers
                     {
                         toAddTo.DiceFaceUnlockedQty += amountToCraft;
                         toDeleteFrom.DiceFaceUnlockedQty -= amountToDestroy;
-                        cost = (amountToCraft + amountToDestroy) * (isDie ? 50 : 100);
+                        cost = (toAddTo.DiceSkin.Rarity == 3 ? 450 : toAddTo.DiceSkin.Rarity == 2 ? 150 : 50) * (isDie ? 2 : 1);
                     }
                 }
                 if (player.Calories >= cost)
@@ -415,15 +415,15 @@ namespace PotStirrersWebAPI.Controllers
             rarity = random.Next(0, 26);
             if (rarity == 25)
             {
-                returnNum = random.Next(19, 22);
+                returnNum = random.Next(22, 25);
             }
             else if (rarity > 16)
             {
-                returnNum = random.Next(13, 19);
+                returnNum = random.Next(15, 22);
             }
             else
             {
-                returnNum = random.Next(4, 13);
+                returnNum = random.Next(5, 15);
             }
             return returnNum;
         }

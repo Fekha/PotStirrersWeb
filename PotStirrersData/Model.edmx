@@ -69,6 +69,8 @@ warning 6002: The table/view 'PotStirreresDB.dbo.AppVersion' does not have a pri
           <Property Name="TotalTurns" Type="int" />
           <Property Name="Quit" Type="bit" Nullable="false" />
           <Property Name="Wager" Type="int" Nullable="false" />
+          <Property Name="IsFriendGame" Type="bit" Nullable="false" />
+          <Property Name="IsCPUGame" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="GiveawayKey">
           <Key>
@@ -132,6 +134,7 @@ warning 6002: The table/view 'PotStirreresDB.dbo.AppVersion' does not have a pri
           <Property Name="OnlineWins" Type="int" Nullable="false" />
           <Property Name="Calories" Type="int" Nullable="false" />
           <Property Name="SeasonScore" Type="int" Nullable="false" />
+          <Property Name="DisableTurnDing" Type="bit" Nullable="false" />
           <Property Name="GameVolume" Type="float" Nullable="false" />
           <Property Name="TurnVolume" Type="float" Nullable="false" />
         </EntityType>
@@ -741,6 +744,8 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <Property Name="Wager" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Player" Relationship="PotStirreresDBModel.FK_GameAnalytics_Player" FromRole="GameAnalytic" ToRole="Player" />
           <NavigationProperty Name="Player1" Relationship="PotStirreresDBModel.FK_GameAnalytics_Player1" FromRole="GameAnalytic" ToRole="Player" />
+          <Property Name="IsFriendGame" Type="Boolean" Nullable="false" />
+          <Property Name="IsCPUGame" Type="Boolean" Nullable="false" />
           </EntityType>
         <EntityType Name="Device">
           <Key>
@@ -967,6 +972,7 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <NavigationProperty Name="Titles1" Relationship="PotStirreresDBModel.User_Title_Unlock" FromRole="Player" ToRole="Title" />
           <Property Name="GameVolume" Type="Double" Nullable="false" />
           <Property Name="TurnVolume" Type="Double" Nullable="false" />
+          <Property Name="DisableTurnDing" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_Chest_Player">
           <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
@@ -1117,6 +1123,8 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <EntitySetMapping Name="GameAnalytics">
             <EntityTypeMapping TypeName="PotStirreresDBModel.GameAnalytic">
               <MappingFragment StoreEntitySet="GameAnalytics">
+                <ScalarProperty Name="IsCPUGame" ColumnName="IsCPUGame" />
+                <ScalarProperty Name="IsFriendGame" ColumnName="IsFriendGame" />
                 <ScalarProperty Name="Wager" ColumnName="Wager" />
                 <ScalarProperty Name="Quit" ColumnName="Quit" />
                 <ScalarProperty Name="TotalTurns" ColumnName="TotalTurns" />
@@ -1269,6 +1277,7 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <EntitySetMapping Name="Players">
             <EntityTypeMapping TypeName="PotStirreresDBModel.Player">
               <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="DisableTurnDing" ColumnName="DisableTurnDing" />
                 <ScalarProperty Name="TurnVolume" ColumnName="TurnVolume" />
                 <ScalarProperty Name="GameVolume" ColumnName="GameVolume" />
                 <ScalarProperty Name="SeasonScore" ColumnName="SeasonScore" />

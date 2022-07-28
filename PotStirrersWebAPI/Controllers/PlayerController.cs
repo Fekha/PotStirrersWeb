@@ -171,7 +171,7 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
-                if (UserId != 0)
+                if (UserId != 0 && UserId != 40)
                 {
                     MultiplayerController.UpdatePing(UserId);
                 }
@@ -274,15 +274,17 @@ namespace PotStirrersWebAPI.Controllers
 
         [HttpGet]
         [Route("api/player/GetFriends")]
-        public IHttpActionResult GetFriends(int userId)
+        public IHttpActionResult GetFriends(int userId, bool onlyOnline = false)
         {
             using (PotStirreresDBEntities context = new PotStirreresDBEntities())
             {
-                var friends = context.Players.FirstOrDefault(x => x.UserId == userId).Player1.Select(y => new FriendDTO() { 
+                var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, easternZone);
+                var timeBackward = timeNow.AddSeconds(-10);
+                var friends = context.Players.FirstOrDefault(x => x.UserId == userId).Player1.Where(x=> !onlyOnline || (MultiplayerController.Pings.Any(y => x.UserId == y.UserId) && MultiplayerController.Pings.FirstOrDefault(y => x.UserId == y.UserId).PlayerLastPing > timeBackward)).Select(y => new FriendDTO() { 
                     UserId = y.UserId,
                     Username = y.Username,
                     RealFriend = y.Player1.Any(z => z.UserId == userId),
-                    Level = y.Level
+                    Level = y.Level,
                 }).ToList();
                 return Json(friends);
             }

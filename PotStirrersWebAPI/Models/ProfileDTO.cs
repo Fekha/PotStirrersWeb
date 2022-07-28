@@ -10,11 +10,12 @@ namespace PotStirrersWebAPI.Models
     {
         public ProfileDTO(PlayerProfile x)
         {
+            UserId = x.UserId;
             Username = x.Username;
             DailyWins = x.DailyWins;
             WeeklyWins = x.WeeklyWins;
             AllWins = x.AllWins;
-            AllPVPWins=x.AllPVPWins;
+            AllPVPWins= x.AllPVPWins;
             Level = x.Level;
             CreatedDate = x.CreatedDate;
             Cooked = x.Cooked;
@@ -22,6 +23,7 @@ namespace PotStirrersWebAPI.Models
             Calories = x.Calories;
             LastLogin = x.LastLogin;
         }
+        public int UserId { get; set; }
         public string Username { get; set; }
         public Nullable<int> DailyWins { get; set; }
         public Nullable<int> WeeklyWins { get; set; }

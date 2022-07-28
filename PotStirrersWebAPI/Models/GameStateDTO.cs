@@ -10,6 +10,7 @@ namespace PotStirrersWebAPI.Models
         public int GameId { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool StartedPlaying { get; set; }
+        public bool IsFriendGame { get; set; }
         public bool? ShouldTrash { get; set; }
         public PlayerDTO Player1 { get; set; }
         public PlayerDTO Player2 { get; set; }
