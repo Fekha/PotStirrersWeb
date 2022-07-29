@@ -477,6 +477,7 @@ namespace PotStirrersWebAPI.Controllers
                         winner.OnlineWins++;
                     else
                         winner.Wins++;
+
                     if (!oldGame.IsFriendGame && (!oldGame.IsCPUGame || oldGame.Player2Id == 42))
                     {
                         if (TotalTurns >= 20)
@@ -545,6 +546,7 @@ namespace PotStirrersWebAPI.Controllers
                 } else {
                     message += $" {loser.Username} Quit! \n \n";
                 }
+
                 message += $"The match lasted {TotalTurns} turns! \n \n";
                 if (oldGame.IsFriendGame)
                 {
