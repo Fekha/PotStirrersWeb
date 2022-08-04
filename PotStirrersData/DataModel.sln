@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModel", "DataModel.csproj", "{AFA62C81-405F-4FC4-9E18-CE359026F749}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PotStirrersWebAPI", "..\PotStirrersWebAPI\PotStirrersWebAPI.csproj", "{26071039-C12F-4455-8CAA-63B789503965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PotStirrersAPI", "..\PotStirrersAPI\PotStirrersAPI.csproj", "{03B71557-D963-4507-BCE9-D88712D22C09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AFA62C81-405F-4FC4-9E18-CE359026F749}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFA62C81-405F-4FC4-9E18-CE359026F749}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFA62C81-405F-4FC4-9E18-CE359026F749}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFA62C81-405F-4FC4-9E18-CE359026F749}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26071039-C12F-4455-8CAA-63B789503965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26071039-C12F-4455-8CAA-63B789503965}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26071039-C12F-4455-8CAA-63B789503965}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26071039-C12F-4455-8CAA-63B789503965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03B71557-D963-4507-BCE9-D88712D22C09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03B71557-D963-4507-BCE9-D88712D22C09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03B71557-D963-4507-BCE9-D88712D22C09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03B71557-D963-4507-BCE9-D88712D22C09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

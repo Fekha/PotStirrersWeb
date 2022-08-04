@@ -137,6 +137,9 @@ warning 6002: The table/view 'PotStirreresDB.dbo.AppVersion' does not have a pri
           <Property Name="DisableTurnDing" Type="bit" Nullable="false" />
           <Property Name="GameVolume" Type="float" Nullable="false" />
           <Property Name="TurnVolume" Type="float" Nullable="false" />
+          <Property Name="VoiceVolume" Type="float" Nullable="false" />
+          <Property Name="EffectsVolume" Type="float" Nullable="false" />
+          <Property Name="MasterVolume" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="SelectedDice">
           <Key>
@@ -973,6 +976,9 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <Property Name="GameVolume" Type="Double" Nullable="false" />
           <Property Name="TurnVolume" Type="Double" Nullable="false" />
           <Property Name="DisableTurnDing" Type="Boolean" Nullable="false" />
+          <Property Name="VoiceVolume" Type="Double" Nullable="false" />
+          <Property Name="EffectsVolume" Type="Double" Nullable="false" />
+          <Property Name="MasterVolume" Type="Double" Nullable="false" />
         </EntityType>
         <Association Name="FK_Chest_Player">
           <End Type="PotStirreresDBModel.Player" Role="Player" Multiplicity="1" />
@@ -1277,6 +1283,9 @@ warning 6002: The table/view 'PotStirreresDB.dbo.PlayerProfile' does not have a 
           <EntitySetMapping Name="Players">
             <EntityTypeMapping TypeName="PotStirreresDBModel.Player">
               <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="MasterVolume" ColumnName="MasterVolume" />
+                <ScalarProperty Name="EffectsVolume" ColumnName="EffectsVolume" />
+                <ScalarProperty Name="VoiceVolume" ColumnName="VoiceVolume" />
                 <ScalarProperty Name="DisableTurnDing" ColumnName="DisableTurnDing" />
                 <ScalarProperty Name="TurnVolume" ColumnName="TurnVolume" />
                 <ScalarProperty Name="GameVolume" ColumnName="GameVolume" />

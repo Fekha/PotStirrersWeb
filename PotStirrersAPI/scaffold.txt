@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext -connection "Server=potstirrersserver.database.windows.net;Database=PotStirreresDB;User Id=Sql_James;Password=Version101#;" -provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -force

@@ -56,6 +56,9 @@ namespace DataModel
         public double GameVolume { get; set; }
         public double TurnVolume { get; set; }
         public bool DisableTurnDing { get; set; }
+        public double VoiceVolume { get; set; }
+        public double EffectsVolume { get; set; }
+        public double MasterVolume { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Chest> Chests { get; set; }
