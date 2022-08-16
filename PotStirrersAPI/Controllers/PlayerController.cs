@@ -48,18 +48,22 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBContext context = new PotStirreresDBContext())
             {
-                var user = context.Players
+               
+                var user = context.Players.Where(x => x.Username == username && x.Password == password)
                     .Include(x => x.IngredientSkins)
                     .Include(x => x.DiceSkins)
                     .Include(x => x.Titles)
                     .Include(x => x.UserDiceUnlocks)
                     .Include(x => x.UserIngredientUnlocks)
-                    .Include(x => x.TitlesNavigation)
-                    .FirstOrDefault(x => x.Username == username && x.Password == password);
+                    .Include(x => x.TitlesNavigation).FirstOrDefault();
                 if (user != null)
                 {
+                    var friends = context.Players.Where(x => x.UserId == user.UserId).Include(x => x.Friends).First().Friends.Select(x => x.UserId).ToList();
+                    //var friends = context.Players.Include(x => x.Friends).Where(x => x.Friends.Select(x => x.UserId).Contains(user.UserId)).Select(x => x.UserId).ToList();
                     RememberDevice(rememberMe, deviceId, user.UserId, context);
-                    return Ok(new PlayerDTO(user));
+                    var player = new PlayerDTO(user);
+                    player.Friends = friends;
+                    return Ok(player);
                 }
                 return Ok(user);
             }
@@ -287,7 +291,7 @@ namespace PotStirrersWebAPI.Controllers
             {
                 var timeBefore = timeNow.AddSeconds(-10);
 
-                var profile = new PlayerDTO(context.Players.First(x => x.UserId == UserId), context.PlayerProfiles.First(x => x.UserId == UserId), timeNow, timeBefore);
+                var profile = new PlayerDTO(context.Players.Include(x=>x.Friends).First(x => x.UserId == UserId), context.PlayerProfiles.First(x => x.UserId == UserId), timeNow, timeBefore);
                 return Ok(profile);
             }
         }
@@ -352,7 +356,13 @@ namespace PotStirrersWebAPI.Controllers
                     {
                         player.Friends.Remove(friend);
                         context.SaveChanges();
-                        return Ok(userId);
+                        return Ok(new FriendDTO()
+                        {
+                            UserId = friend.UserId,
+                            Username = friend.Username,
+                            RealFriend = friend.Friends.Any(z => z.UserId == userId),
+                            Level = friend.Level
+                        });
                     }
                 }
                 return Ok(null);

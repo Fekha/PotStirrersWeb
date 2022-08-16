@@ -61,8 +61,8 @@ namespace PotStirrersWebAPI.Controllers
                 {
                     return Ok(new GameStateDTO()
                     {
-                        Player1 = new PlayerDTO(context.Players.Include(x => x.TitlesNavigation).First(x => x.UserId == game.Player1Id)),
-                        Player2 = new PlayerDTO(context.Players.Include(x=>x.TitlesNavigation).First(x => x.UserId == game.Player2Id)),
+                        Player1 = new PlayerDTO(context.Players.Include(x => x.TitlesNavigation).Include(x => x.DiceSkins).Include(x => x.IngredientSkins).First(x => x.UserId == game.Player1Id)),
+                        Player2 = new PlayerDTO(context.Players.Include(x=>x.TitlesNavigation).Include(x => x.DiceSkins).Include(x => x.IngredientSkins).First(x => x.UserId == game.Player2Id)),
                         IsPlayer1Turn = game.IsPlayer1Turn
                     });
                 }
@@ -410,7 +410,7 @@ namespace PotStirrersWebAPI.Controllers
             using (PotStirreresDBContext context = new PotStirreresDBContext())
             {
                 var rewardsGiven = false;
-                var oldGame = context.GameAnalytics.First(x => x.GameId == GameId);
+                var oldGame = context.GameAnalytics.Include(x=>x.Player1).Include(x=>x.Player2).First(x => x.GameId == GameId);
                 if (oldGame.GameEndTime == null)
                 {
                     if (RageQuit != 0)

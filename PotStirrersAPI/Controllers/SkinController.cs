@@ -136,7 +136,7 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBContext context = new PotStirreresDBContext())
             {
-                var dbPlayer = context.Players.Include(x => x.UserIngredientUnlocks).First(x => x.UserId == UserId);
+                var dbPlayer = context.Players.Include(x => x.UserIngredientUnlocks).ThenInclude(x=>x.IngredientSkin).First(x => x.UserId == UserId);
                 var toUnlock = dbPlayer.UserIngredientUnlocks.First(x => x.IngredientSkinId == SkinId);
                 var cost = (toUnlock.IngredientSkin.Rarity == 3 ? 1500 : toUnlock.IngredientSkin.Rarity == 2 ? 1000 : 500);
                 if (dbPlayer.Calories >= cost)
@@ -155,7 +155,7 @@ namespace PotStirrersWebAPI.Controllers
         {
             using (PotStirreresDBContext context = new PotStirreresDBContext())
             {
-                var dbPlayer = context.Players.Include(x => x.UserDiceUnlocks).First(x => x.UserId == UserId);
+                var dbPlayer = context.Players.Include(x => x.UserDiceUnlocks).ThenInclude(x => x.DiceSkin).First(x => x.UserId == UserId);
                 var toUnlock = dbPlayer.UserDiceUnlocks.First(x => x.DiceSkinId == SkinId);
                 var cost = (toUnlock.DiceSkin.Rarity == 3 ? 1500 : toUnlock.DiceSkin.Rarity == 2 ? 1000 : 500);
                 if (dbPlayer.Calories >= cost)

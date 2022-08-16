@@ -83,6 +83,10 @@ namespace PotStirrersAPI.Models
             {
                 entity.ToTable("Chest");
 
+                entity.HasIndex(e => e.ChestTypeId, "IX_Chest");
+
+                entity.HasIndex(e => e.UserId, "IX_Chest_1");
+
                 entity.Property(e => e.ChestSize).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.ChestTypeId).HasDefaultValueSql("((1))");
@@ -124,6 +128,8 @@ namespace PotStirrersAPI.Models
             {
                 entity.ToTable("Device");
 
+                entity.HasIndex(e => e.UserId, "IX_Device");
+
                 entity.Property(e => e.DeviceId).ValueGeneratedNever();
 
                 entity.HasOne(d => d.User)
@@ -147,6 +153,10 @@ namespace PotStirrersAPI.Models
             modelBuilder.Entity<GameAnalytic>(entity =>
             {
                 entity.HasKey(e => e.GameId);
+
+                entity.HasIndex(e => e.Player1Id, "IX_GameAnalytics");
+
+                entity.HasIndex(e => e.Player2Id, "IX_GameAnalytics_1");
 
                 entity.Property(e => e.GameEndTime).HasColumnType("datetime");
 
@@ -185,6 +195,8 @@ namespace PotStirrersAPI.Models
             modelBuilder.Entity<GiveawayKey>(entity =>
             {
                 entity.ToTable("GiveawayKey");
+
+                entity.HasIndex(e => e.ClaimedById, "IX_GiveawayKey");
 
                 entity.Property(e => e.ClaimedTime).HasColumnType("datetime");
 
