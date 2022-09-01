@@ -44,12 +44,12 @@ namespace PotStirrersWebAPI.Controllers
 
         [HttpGet]
         [Route("api/player/LoginUser")]
-        public ActionResult LoginUser(string username, string password, bool rememberMe, Guid deviceId)
+        public ActionResult LoginUser(string username, string password, bool rememberMe, Guid deviceId, bool isGooglePlay = false)
         {
             using (PotStirreresDBContext context = new PotStirreresDBContext())
             {
                
-                var user = context.Players.Where(x => x.Username == username && x.Password == password)
+                var user = context.Players.Where(x => x.Username == username && (x.Password == password || isGooglePlay))
                     .Include(x => x.IngredientSkins)
                     .Include(x => x.DiceSkins)
                     .Include(x => x.Titles)
@@ -134,7 +134,7 @@ namespace PotStirrersWebAPI.Controllers
                     };
                     context.Players.Add(user);
                     context.SaveChanges();
-                    user.MessageFroms.Add(new Message()
+                    user.MessageUsers.Add(new Message()
                     {
                         Subject = "Welcome to Potstirrers!",
                         Body = "You are amazing! \n Message me back to let me know how you feel about the game for a free gift!",
