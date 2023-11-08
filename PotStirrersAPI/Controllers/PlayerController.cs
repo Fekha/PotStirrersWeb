@@ -7,7 +7,7 @@ namespace PotStirrersWebAPI.Controllers
 {
     public class PlayerController : Controller
     {
-        TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        TimeZoneInfo easternZone = TimeZoneInfo.Utc;
 
         public PlayerDTO? GetUserByName(string username)
         {
@@ -424,6 +424,13 @@ namespace PotStirrersWebAPI.Controllers
                 });
                 context.SaveChanges();
             }
+            return Ok(true);
+        }
+
+        [HttpGet]
+        [Route("api/player/Test")]
+        public ActionResult Test()
+        {
             return Ok(true);
         }
     }

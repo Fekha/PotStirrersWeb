@@ -12,7 +12,7 @@ namespace PotStirrersWebAPI.Controllers
         public static List<PlayerPing> Pings = new List<PlayerPing>();
         public static Random random = new Random();
 
-        private static TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        private static TimeZoneInfo easternZone = TimeZoneInfo.Utc;
 
         private int CreateGame(int Player1, int Player2, int Wager, bool friendGame = false, bool IsCpuGame = false)
         {

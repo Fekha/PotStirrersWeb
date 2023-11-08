@@ -26,6 +26,7 @@ RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
 
 # If you need to enable globalization and time zones:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/enable-globalization.md
+
 ################################################################################
 # Create a new stage for running the application that contains the minimal
 # runtime dependencies for the application. This often uses a different base
@@ -39,7 +40,9 @@ RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
 # or SHA (e.g., mcr.microsoft.com/dotnet/aspnet@sha256:f3d99f54d504a21d38e4cc2f13ff47d67235efeeb85c109d3d1ff1808b38d034).
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS final
 WORKDIR /app
-
+EXPOSE 7001
+EXPOSE 80
+ENV ASPNETCORE_URLS=http://+:7001
 # Copy everything needed to run the app from the "build" stage.
 COPY --from=build /app .
 
@@ -54,6 +57,11 @@ RUN adduser \
     --no-create-home \
     --uid "${UID}" \
     appuser
+
 USER appuser
 
+# Expose port 80 for HTTP
+
+
+# Remove SSL configuration to run with HTTP
 ENTRYPOINT ["dotnet", "PotStirrersAPI.dll"]
